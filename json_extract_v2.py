@@ -1,7 +1,6 @@
 import json
 import yaml
 
-path = ""
 
 with open("./conf/local_conf.yaml") as file:
     # The FullLoader parameter handles the conversion from YAML
