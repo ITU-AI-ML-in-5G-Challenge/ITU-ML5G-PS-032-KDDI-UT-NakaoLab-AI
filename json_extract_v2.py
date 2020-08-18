@@ -1,6 +1,15 @@
 import json
+import yaml
 
-path = "./20200629/physical/20200629105300.json"
+path = ""
+
+with open("./conf/local_conf.yaml") as file:
+    # The FullLoader parameter handles the conversion from YAML
+    # scalar values to Python the dictionary format
+    param_list = yaml.load(file, Loader=yaml.FullLoader)
+    path = param_list["path"]
+    print(param_list["path"])
+
 all_attributes_value = []
 all_attributes_key = []
 attribute_key = ''
