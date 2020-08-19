@@ -1,6 +1,8 @@
 import json
-import yaml
 import os
+
+import yaml
+
 
 class Dict(dict):
     __setattr__ = dict.__setitem__
@@ -28,7 +30,6 @@ def Return_Attribute_List(data):
 
 
 def Return_All_Atributes(data, attribute_key, all_attributes_value, all_attributes_key):
-
     data = dictToObj(data)
     if isinstance(data, list):
         for item in data:
@@ -59,7 +60,12 @@ def Return_All_Atributes(data, attribute_key, all_attributes_value, all_attribut
 
 
 def read_json_by_folder(folder_path, batch=0):
-    path_list = os.listdir(folder_path)
+    path_list = []
+    for file_path in os.listdir(folder_path):
+        if file_path.endswith(".json"):
+            path_list.append(file_path)
+    path_list.sort(key=lambda x: int(x[:-5]))
+
     if batch == 0:
         batch = len(path_list)
 
