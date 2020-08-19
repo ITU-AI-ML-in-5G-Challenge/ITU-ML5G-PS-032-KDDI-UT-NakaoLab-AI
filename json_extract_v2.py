@@ -1,6 +1,6 @@
 import json
 import os
-
+import csv
 import yaml
 
 
@@ -16,6 +16,23 @@ def dictToObj(dictObj):
     for k, v in dictObj.items():
         d[k] = dictToObj(v)
     return d
+
+class WriteToCSV():
+    def __init__(self, path):
+        if os.path.exists(path):
+            os.remove(path)
+
+        self.file = open(path, 'a')
+        self.csv_write = csv.writer(self.file)
+
+    def init_title(self, all_attributes_key):
+        self.csv_write.writerow(all_attributes_key)
+
+    def add_rows(self, all_attributes_value):
+        self.csv_write.writerow(all_attributes_value)
+
+    def close(self):
+        self.file.close()
 
 
 def return_obj(data):
@@ -69,9 +86,31 @@ def read_json_by_folder(folder_path, batch=0):
     if batch == 0:
         batch = len(path_list)
 
+    sort_key = []
+    new_attributes_value = []
+    write_file_path = './csv/'+path_list[0][:-11]+'.csv'
+    write_file = None
     for i in range(batch):
         print(folder_path + path_list[i])
-        read_json_by_path(folder_path + path_list[i])
+        all_attributes_value, all_attributes_key = read_json_by_path(folder_path + path_list[i])
+        print(all_attributes_key)
+        print(all_attributes_value)
+        if i == 0:
+            sort_key = all_attributes_key
+            write_file = WriteToCSV(write_file_path)
+            write_file.init_title(sort_key)
+            write_file.add_rows(all_attributes_value)
+        else:
+            new_attributes_value = sort_attributes_value(sort_key, all_attributes_key, all_attributes_value)
+            write_file.add_rows(new_attributes_value)
+        print(new_attributes_value)
+
+
+def sort_attributes_value(sort_key, all_attributes_key, all_attributes_value):
+    new_attributes_value = all_attributes_value.copy()
+    for i in range(len(all_attributes_key)):
+        new_attributes_value[sort_key.index(all_attributes_key[i])] = all_attributes_value[i]
+    return new_attributes_value
 
 
 def read_json_by_path(path):
@@ -82,8 +121,7 @@ def read_json_by_path(path):
         all_attributes_value = []
         all_attributes_key = []
         Return_All_Atributes(data, attribute_key, all_attributes_value, all_attributes_key)
-        print(all_attributes_value)
-        print(all_attributes_key)
+        return all_attributes_value, all_attributes_key
 
 
 def main():
