@@ -50,7 +50,16 @@ def Return_Attribute_List(data):
     return list(data.keys()), list(data.values())
 
 
-def Return_All_Atributes(data, attribute_key, all_attributes_value, all_attributes_key):
+def Return_All_Atributes(data, attribute_key, all_attributes_value, all_attributes_key, data_type):
+    virtual_blacklist = ['/devices#IntGW-01/progress']
+    network_blacklist = ['']
+    physical_blacklist = ['']
+    if data_type == 'v':
+        black_list = virtual_blacklist
+    elif data_type == 'p':
+        black_list = physical_blacklist
+    else:
+        black_list = network_blacklist
     data = dictToObj(data)
     if isinstance(data, list):
         for item in data:
@@ -58,29 +67,32 @@ def Return_All_Atributes(data, attribute_key, all_attributes_value, all_attribut
             if isinstance(item, dict):
                 attribute_key_list, attribute_value_list = Return_Attribute_List(item)
                 if 'name' in attribute_key_list:
-                    key_ = attribute_key + '#' + attribute_value_list[attribute_key_list.index('name')]
+                    key_ = attribute_key + '#' + str(attribute_value_list[attribute_key_list.index('name')])
                 else:
                     key_ = attribute_key + str(data.index(item))
                 for i in attribute_key_list:
                     item[i] = dictToObj(item[i])
-                    Return_All_Atributes(item[i], key_ + '/' + i, all_attributes_value, all_attributes_key)
+                    Return_All_Atributes(item[i], key_ + '/' + str(i), all_attributes_value, all_attributes_key, data_type)
             else:
-                if isinstance(data, (int, float)):
-                    all_attributes_value.append(item)
-                    all_attributes_key.append(attribute_key)
+                key_ = attribute_key + str(data.index(item))
+                if key_ not in black_list:
+                    if isinstance(item, (int, float)):
+                        all_attributes_value.append(item)
+                        all_attributes_key.append(key_)
     else:
         if isinstance(data, dict):
             attribute_key_list, attribute_value_list = Return_Attribute_List(data)
             for item in attribute_key_list:
                 data[item] = dictToObj(data[item])
-                Return_All_Atributes(data[item], attribute_key + '/' + item, all_attributes_value, all_attributes_key)
+                Return_All_Atributes(data[item], attribute_key + '/' + str(item), all_attributes_value, all_attributes_key, data_type)
         else:
-            if isinstance(data, (int, float)):
-                all_attributes_value.append(data)
-                all_attributes_key.append(attribute_key)
+            if str(attribute_key) not in black_list:
+                if isinstance(data, (int, float)):
+                    all_attributes_value.append(data)
+                    all_attributes_key.append(str(attribute_key))
 
 
-def read_json_by_folder(folder_path, batch=0):
+def read_json_by_folder(folder_path, data_type, batch=0):
     path_list = []
     for file_path in os.listdir(folder_path):
         if file_path.endswith(".json"):
@@ -100,9 +112,10 @@ def read_json_by_folder(folder_path, batch=0):
 
     for i in range(batch):
         print(folder_path + path_list[i])
-        all_attributes_value, all_attributes_key = read_json_by_path(folder_path + path_list[i])
-        print('all_attributes_key:', all_attributes_key)
-        print('all_attributes_value', all_attributes_value)
+        all_attributes_value, all_attributes_key = read_json_by_path(folder_path + path_list[i], data_type)
+        print (len(all_attributes_key))
+        #print('all_attributes_key:', all_attributes_key)
+        #print('all_attributes_value', all_attributes_value)
         if i == 0:
             sort_key = all_attributes_key
             write_file = WriteToCSV(write_file_path)
@@ -119,25 +132,36 @@ def read_json_by_folder(folder_path, batch=0):
             new_attributes_value.append(recipes.get_type(path_list[i]))
             new_attributes_value.append(recipes.get_type_code(path_list[i]))
             write_file.add_rows(new_attributes_value)
-        print('new_attributes_value', new_attributes_value)
+        #print('new_attributes_value', new_attributes_value)
     write_file.close()
 
 
 def sort_attributes_value(sort_key, all_attributes_key, all_attributes_value):
     new_attributes_value = all_attributes_value.copy()
+    '''
+    for i in range(len(sort_key)):
+        if sort_key[i] == 'type_code' or sort_key[i] == 'type':
+            continue
+        if sort_key[i] in all_attributes_key:
+            pass
+        else:
+            print (sort_key[i])
+        #new_attributes_value[sort_key.index(all_attributes_key[i])] = all_attributes_value[i]
+    '''
     for i in range(len(all_attributes_key)):
+        #print (all_attributes_key[i])
         new_attributes_value[sort_key.index(all_attributes_key[i])] = all_attributes_value[i]
     return new_attributes_value
 
 
-def read_json_by_path(path):
+def read_json_by_path(path, data_type):
     with open(path, 'r') as load_f:
         data = json.load(load_f)
         data = dictToObj(data)
         attribute_key = ''
         all_attributes_value = []
         all_attributes_key = []
-        Return_All_Atributes(data, attribute_key, all_attributes_value, all_attributes_key)
+        Return_All_Atributes(data, attribute_key, all_attributes_value, all_attributes_key, data_type)
         return all_attributes_value, all_attributes_key
 
 
@@ -146,8 +170,9 @@ def main():
         # The FullLoader parameter handles the conversion from YAML
         # scalar values to Python the dictionary format
         param_list = yaml.load(file, Loader=yaml.FullLoader)
-        read_json_by_folder(param_list["physical"], 0)
-
+        #read_json_by_folder(param_list["physical"], 'p', 0)
+        read_json_by_folder(param_list["network"], 'n', 0)
+        #read_json_by_folder(param_list["virtual"], 'v' , 0)
 
 if __name__ == "__main__":
     main()
