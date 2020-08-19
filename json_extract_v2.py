@@ -4,6 +4,8 @@ import os
 
 import yaml
 
+from label_extract import load_label
+
 
 class Dict(dict):
     __setattr__ = dict.__setitem__
@@ -88,10 +90,13 @@ def read_json_by_folder(folder_path, batch=0):
     if batch == 0:
         batch = len(path_list)
 
+    # 初始化
     sort_key = []
     new_attributes_value = []
     write_file_path = './csv/' + path_list[0][:-11] + '.csv'
     write_file = None
+    recipes = load_label("./label-for-learning.json")
+
     for i in range(batch):
         print(folder_path + path_list[i])
         all_attributes_value, all_attributes_key = read_json_by_path(folder_path + path_list[i])
@@ -100,10 +105,18 @@ def read_json_by_folder(folder_path, batch=0):
         if i == 0:
             sort_key = all_attributes_key
             write_file = WriteToCSV(write_file_path)
-            write_file.init_title(sort_key)
+
+            all_attributes_key.append('type')
+            all_attributes_key.append('type_code')
+            write_file.init_title(all_attributes_key)
+
+            all_attributes_value.append(recipes.get_type(path_list[i]))
+            all_attributes_value.append(recipes.get_type_code(path_list[i]))
             write_file.add_rows(all_attributes_value)
         else:
             new_attributes_value = sort_attributes_value(sort_key, all_attributes_key, all_attributes_value)
+            new_attributes_value.append(recipes.get_type(path_list[i]))
+            new_attributes_value.append(recipes.get_type_code(path_list[i]))
             write_file.add_rows(new_attributes_value)
         print('new_attributes_value', new_attributes_value)
     write_file.close()

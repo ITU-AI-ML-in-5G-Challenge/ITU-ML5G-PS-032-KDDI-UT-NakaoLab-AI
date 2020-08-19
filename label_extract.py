@@ -37,8 +37,9 @@ class Recipes:
                 return json_obj["type"]
 
     def get_type_code(self, file_name):
-        type = self.get_type(file_name)
-        return type_list.index(type)
+        str_type = self.get_type(file_name)
+        return type_list.index(str_type)
+
 
 def load_label(path):
     with open(path, 'r') as label:
@@ -57,7 +58,6 @@ if __name__ == '__main__':
     print(recipes.get_type("20200629105800.json"))
     print(recipes.get_type("20200629105900.json"))
     print(recipes.get_type("20200629110000.json"))
-
 
     print(recipes.get_type_code("20200629105300.json"))
     print(recipes.get_type_code("20200629105300.json"))
