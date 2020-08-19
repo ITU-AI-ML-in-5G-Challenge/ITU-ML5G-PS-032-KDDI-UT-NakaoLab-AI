@@ -87,6 +87,7 @@ def read_json_by_folder(folder_path, batch=0):
             path_list.append(file_path)
     path_list.sort(key=lambda x: int(x[:-5]))
 
+    print('file_count:', len(path_list))
     if batch == 0:
         batch = len(path_list)
 
@@ -145,7 +146,7 @@ def main():
         # The FullLoader parameter handles the conversion from YAML
         # scalar values to Python the dictionary format
         param_list = yaml.load(file, Loader=yaml.FullLoader)
-        read_json_by_folder(param_list["physical"], 50)
+        read_json_by_folder(param_list["physical"], 0)
 
 
 if __name__ == "__main__":
