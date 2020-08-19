@@ -1,3 +1,6 @@
 # 20200629/physical/20200629105300.json
 # /Users/nakaolab/Desktop/s/5G challenge/dataset/dataset/20200629161300.json
 path: 20200629/physical/20200629105300.json
+physical: 20200629/physical/
+network: 20200629/network/
+virtual: 20200629/virtual/
