@@ -172,9 +172,9 @@ def main():
         # The FullLoader parameter handles the conversion from YAML
         # scalar values to Python the dictionary format
         param_list = yaml.load(file, Loader=yaml.FullLoader)
-        read_json_by_folder(param_list["physical"], 'p', 0)
+        # read_json_by_folder(param_list["physical"], 'p', 0)
         # read_json_by_folder(param_list["network"], 'n', 0)
-        # read_json_by_folder(param_list["virtual"], 'v', 0)
+        read_json_by_folder(param_list["virtual"], 'v', 10)
 
 
 if __name__ == "__main__":
