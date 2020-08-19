@@ -1,6 +1,7 @@
+import csv
 import json
 import os
-import csv
+
 import yaml
 
 
@@ -16,6 +17,7 @@ def dictToObj(dictObj):
     for k, v in dictObj.items():
         d[k] = dictToObj(v)
     return d
+
 
 class WriteToCSV():
     def __init__(self, path):
@@ -88,13 +90,13 @@ def read_json_by_folder(folder_path, batch=0):
 
     sort_key = []
     new_attributes_value = []
-    write_file_path = './csv/'+path_list[0][:-11]+'.csv'
+    write_file_path = './csv/' + path_list[0][:-11] + '.csv'
     write_file = None
     for i in range(batch):
         print(folder_path + path_list[i])
         all_attributes_value, all_attributes_key = read_json_by_path(folder_path + path_list[i])
-        print(all_attributes_key)
-        print(all_attributes_value)
+        print('all_attributes_key:', all_attributes_key)
+        print('all_attributes_value', all_attributes_value)
         if i == 0:
             sort_key = all_attributes_key
             write_file = WriteToCSV(write_file_path)
@@ -103,7 +105,8 @@ def read_json_by_folder(folder_path, batch=0):
         else:
             new_attributes_value = sort_attributes_value(sort_key, all_attributes_key, all_attributes_value)
             write_file.add_rows(new_attributes_value)
-        print(new_attributes_value)
+        print('new_attributes_value', new_attributes_value)
+    write_file.close()
 
 
 def sort_attributes_value(sort_key, all_attributes_key, all_attributes_value):
@@ -129,7 +132,7 @@ def main():
         # The FullLoader parameter handles the conversion from YAML
         # scalar values to Python the dictionary format
         param_list = yaml.load(file, Loader=yaml.FullLoader)
-        read_json_by_folder(param_list["physical"], 5)
+        read_json_by_folder(param_list["physical"], 50)
 
 
 if __name__ == "__main__":
