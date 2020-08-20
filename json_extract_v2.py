@@ -114,7 +114,7 @@ def read_json_by_folder(folder_path, data_type, batch=0):
     for i in range(batch):
         print(folder_path + path_list[i])
         all_attributes_value, all_attributes_key = read_json_by_path(folder_path + path_list[i], data_type)
-        #print (len(all_attributes_key))
+        print (len(all_attributes_key))
         #print('all_attributes_key:', all_attributes_key)
         #print('all_attributes_value', all_attributes_value)
         if i == 0:
@@ -173,7 +173,7 @@ def main():
         param_list = yaml.load(file, Loader=yaml.FullLoader)
         #read_json_by_folder(param_list["physical"], 'p', 0)
         #read_json_by_folder(param_list["network"], 'n', 0)
-        read_json_by_folder(param_list["virtual"], 'v' , 0)
+        read_json_by_folder(param_list["virtual"], 'v' , 10)
 
 if __name__ == "__main__":
     main()
