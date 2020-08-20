@@ -73,7 +73,7 @@ def Return_All_Atributes(data, attribute_key, all_attributes_value, all_attribut
                     key_ = attribute_key + str(data.index(item))
                 for i in attribute_key_list:
                     item[i] = dictToObj(item[i])
-                    Return_All_Atributes(item[i], key_ + '/' + str(i), all_attributes_value, all_attributes_key, data_type)
+                    Return_All_Atributes(item[i], key_ + '/' + str(i), all_attributes_value, all_attributes_key,data_type)
             else:
                 key_ = attribute_key + str(data.index(item))
                 if key_ not in black_list:
@@ -85,7 +85,8 @@ def Return_All_Atributes(data, attribute_key, all_attributes_value, all_attribut
             attribute_key_list, attribute_value_list = Return_Attribute_List(data)
             for item in attribute_key_list:
                 data[item] = dictToObj(data[item])
-                Return_All_Atributes(data[item], attribute_key + '/' + str(item), all_attributes_value, all_attributes_key, data_type)
+                Return_All_Atributes(data[item], attribute_key + '/' + str(item), all_attributes_value,
+                                     all_attributes_key, data_type)
         else:
             if str(attribute_key) not in black_list:
                 if isinstance(data, (int, float)):
@@ -114,9 +115,9 @@ def read_json_by_folder(folder_path, data_type, batch=0):
     for i in range(batch):
         print(folder_path + path_list[i])
         all_attributes_value, all_attributes_key = read_json_by_path(folder_path + path_list[i], data_type)
-        print (len(all_attributes_key))
-        #print('all_attributes_key:', all_attributes_key)
-        #print('all_attributes_value', all_attributes_value)
+        print(len(all_attributes_key))
+        # print('all_attributes_key:', all_attributes_key)
+        # print('all_attributes_value', all_attributes_value)
         if i == 0:
             sort_key = all_attributes_key
             write_file = WriteToCSV(write_file_path)
@@ -133,7 +134,7 @@ def read_json_by_folder(folder_path, data_type, batch=0):
             new_attributes_value.append(recipes.get_type(path_list[i]))
             new_attributes_value.append(recipes.get_type_code(path_list[i]))
             write_file.add_rows(new_attributes_value)
-        #print('new_attributes_value', new_attributes_value)
+        # print('new_attributes_value', new_attributes_value)
     write_file.close()
 
 
@@ -150,7 +151,7 @@ def sort_attributes_value(sort_key, all_attributes_key, all_attributes_value):
         #new_attributes_value[sort_key.index(all_attributes_key[i])] = all_attributes_value[i]
 
     for i in range(len(all_attributes_key)):
-        #print (all_attributes_key[i])
+        # print (all_attributes_key[i])
         new_attributes_value[sort_key.index(all_attributes_key[i])] = all_attributes_value[i]
     return new_attributes_value
 
@@ -171,9 +172,10 @@ def main():
         # The FullLoader parameter handles the conversion from YAML
         # scalar values to Python the dictionary format
         param_list = yaml.load(file, Loader=yaml.FullLoader)
+
         #read_json_by_folder(param_list["physical"], 'p', 0)
         #read_json_by_folder(param_list["network"], 'n', 0)
-        read_json_by_folder(param_list["virtual"], 'v' , 10)
+        read_json_by_folder(param_list["virtual"], 'v', 0)
 
 if __name__ == "__main__":
     main()
