@@ -51,7 +51,8 @@ def Return_Attribute_List(data):
 
 
 def Return_All_Atributes(data, attribute_key, all_attributes_value, all_attributes_key, data_type):
-    virtual_blacklist = ['/devices#IntGW-01/progress']
+    virtual_blacklist = ['/devices#IntGW-01/progress', '/devices#IntGW-02/progress', '/devices#RR-01/progress', '/devices#TR-01/progress',\
+                         '/devices#TR-02/progress', ]
     network_blacklist = ['']
     physical_blacklist = ['']
     if data_type == 'v':
@@ -113,7 +114,7 @@ def read_json_by_folder(folder_path, data_type, batch=0):
     for i in range(batch):
         print(folder_path + path_list[i])
         all_attributes_value, all_attributes_key = read_json_by_path(folder_path + path_list[i], data_type)
-        print (len(all_attributes_key))
+        #print (len(all_attributes_key))
         #print('all_attributes_key:', all_attributes_key)
         #print('all_attributes_value', all_attributes_value)
         if i == 0:
@@ -138,7 +139,7 @@ def read_json_by_folder(folder_path, data_type, batch=0):
 
 def sort_attributes_value(sort_key, all_attributes_key, all_attributes_value):
     new_attributes_value = all_attributes_value.copy()
-    '''
+
     for i in range(len(sort_key)):
         if sort_key[i] == 'type_code' or sort_key[i] == 'type':
             continue
@@ -147,7 +148,7 @@ def sort_attributes_value(sort_key, all_attributes_key, all_attributes_value):
         else:
             print (sort_key[i])
         #new_attributes_value[sort_key.index(all_attributes_key[i])] = all_attributes_value[i]
-    '''
+
     for i in range(len(all_attributes_key)):
         #print (all_attributes_key[i])
         new_attributes_value[sort_key.index(all_attributes_key[i])] = all_attributes_value[i]
@@ -171,8 +172,8 @@ def main():
         # scalar values to Python the dictionary format
         param_list = yaml.load(file, Loader=yaml.FullLoader)
         #read_json_by_folder(param_list["physical"], 'p', 0)
-        read_json_by_folder(param_list["network"], 'n', 0)
-        #read_json_by_folder(param_list["virtual"], 'v' , 0)
+        #read_json_by_folder(param_list["network"], 'n', 0)
+        read_json_by_folder(param_list["virtual"], 'v' , 0)
 
 if __name__ == "__main__":
     main()
