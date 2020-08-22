@@ -151,8 +151,9 @@ def Return_All_Atributes_n(data, attribute_key, all_attributes_value, all_attrib
                 key_ = attribute_key + str(data.index(item))
                 if key_ not in blacklist:
                     if isinstance(item, (int, float)):
-                        all_attributes_value.append(item)
-                        all_attributes_key.append(key_)
+                        if (type(item) != bool):
+                            all_attributes_value.append(item)
+                            all_attributes_key.append(key_)
     else:
         if isinstance(data, dict):
             attribute_key_list, attribute_value_list = Return_Attribute_List(data)
@@ -175,8 +176,9 @@ def Return_All_Atributes_n(data, attribute_key, all_attributes_value, all_attrib
         else:
             if str(attribute_key) not in blacklist:
                 if isinstance(data, (int, float)):
-                    all_attributes_value.append(data)
-                    all_attributes_key.append(str(attribute_key))
+                    if (type(data) != bool):
+                        all_attributes_value.append(data)
+                        all_attributes_key.append(str(attribute_key))
 
 def read_json_by_folder(folder_path, data_type, batch=0):
     path_list = []
@@ -233,7 +235,7 @@ def sort_attributes_value(sort_key, all_attributes_key, all_attributes_value):
             pass
         else:
             lack_num = lack_num + 1
-            #print (sort_key[i])
+            print (sort_key[i])
         #new_attributes_value[sort_key.index(all_attributes_key[i])] = all_attributes_value[i]
     print ("Lack num : ", lack_num)
     for i in range(len(all_attributes_key)):
