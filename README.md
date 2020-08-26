@@ -16,3 +16,8 @@
 - 11: ixnetwork-bgp-hijacking-start: 45
 - 12: ixnetwork-bgp-hijacking-stop: 45
 - 13: ixnetwork-traffic-stop: 1
+
+# CSV生成方法
+在 json_extract_v2.py 里面的main方法里选择一个你要生成的csv文件（其他两个注释掉即可），然后在local_conf.yaml里指定你的数据源路径，运行json_extract_v2.py可以生成对应的csv，倒数第三个字段是时间戳，最后两个字段是label
+
+# 字段分析图的使用方法，打开 xxx_feature_analysis.ipynb， 配置指定的csv路径（上面刚刚生成的csv），运行即可
