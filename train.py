@@ -55,7 +55,7 @@ pd.set_option('display.max_rows', None)
 pd.set_option('max_colwidth', 100)
 
 # 读取csv
-dataset = pd.read_csv('./csv/20200629.csv')
+dataset = pd.read_csv('./csv/physical-20200629.csv')
 
 print('列数:', dataset.shape[1], '行数:', dataset.shape[0])
 # 划分训练测试
