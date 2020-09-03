@@ -6,6 +6,10 @@ import yaml
 
 from label_extract import load_label
 
+DATA_SET="/home/itu/datadisk/dataset"
+LEARNING_DIR="/home/itu/datadisk/dataset/data-for-learning"
+EVALUATION_DIR="/home/itu/datadisk/dataset/data-for-evaluation"
+DATE="20200629"
 
 class Dict(dict):
     __setattr__ = dict.__setitem__
@@ -66,7 +70,7 @@ def Return_All_Atributes_p(data, attribute_key, all_attributes_value, all_attrib
                     key_ = attribute_key + str(data.index(item))
                 for i in attribute_key_list:
                     item[i] = dictToObj(item[i])
-                    Return_All_Atributes(item[i], key_ + '/' + str(i), all_attributes_value, all_attributes_key)
+                    Return_All_Atributes_p(item[i], key_ + '/' + str(i), all_attributes_value, all_attributes_key)
             else:
                 key_ = attribute_key + str(data.index(item))
                 if key_ not in blacklist:
@@ -78,10 +82,10 @@ def Return_All_Atributes_p(data, attribute_key, all_attributes_value, all_attrib
             attribute_key_list, attribute_value_list = Return_Attribute_List(data)
             for item in attribute_key_list:
                 data[item] = dictToObj(data[item])
-                Return_All_Atributes(data[item], attribute_key + '/' + str(item), all_attributes_value,
+                Return_All_Atributes_p(data[item], attribute_key + '/' + str(item), all_attributes_value,
                                      all_attributes_key)
         else:
-            if str(attribute_key) not in black_list:
+            if str(attribute_key) not in blacklist:
                 if isinstance(data, (int, float)):
                     all_attributes_value.append(data)
                     all_attributes_key.append(str(attribute_key))
@@ -103,10 +107,10 @@ def Return_All_Atributes_v(data, attribute_key, all_attributes_value, all_attrib
                     key_ = attribute_key + str(data.index(item))
                 for i in attribute_key_list:
                     item[i] = dictToObj(item[i])
-                    Return_All_Atributes(item[i], key_ + '/' + str(i), all_attributes_value, all_attributes_key)
+                    Return_All_Atributes_v(item[i], key_ + '/' + str(i), all_attributes_value, all_attributes_key)
             else:
                 key_ = attribute_key + str(data.index(item))
-                if key_ not in black_list:
+                if key_ not in blacklist:
                     if isinstance(item, (int, float)):
                         all_attributes_value.append(item)
                         all_attributes_key.append(key_)
@@ -115,7 +119,7 @@ def Return_All_Atributes_v(data, attribute_key, all_attributes_value, all_attrib
             attribute_key_list, attribute_value_list = Return_Attribute_List(data)
             for item in attribute_key_list:
                 data[item] = dictToObj(data[item])
-                Return_All_Atributes(data[item], attribute_key + '/' + str(item), all_attributes_value,
+                Return_All_Atributes_v(data[item], attribute_key + '/' + str(item), all_attributes_value,
                                      all_attributes_key)
         else:
             if str(attribute_key) not in blacklist:
@@ -180,9 +184,13 @@ def Return_All_Atributes_n(data, attribute_key, all_attributes_value, all_attrib
                         all_attributes_value.append(data)
                         all_attributes_key.append(str(attribute_key))
 
-def read_json_by_folder(folder_path, data_type, batch=0):
+def read_json_by_folder(folder_path, data_type, batch, attribute):
     path_list = []
     for file_path in os.listdir(folder_path):
+        #print("file_path:"+file_path);
+        #print("date:" + file_path[:8]);
+        #if DATE not in file_path:
+        #    continue;
         if file_path.endswith(".json"):
             path_list.append(file_path)
     path_list.sort(key=lambda x: int(x[:-5]))
@@ -194,9 +202,9 @@ def read_json_by_folder(folder_path, data_type, batch=0):
     # 初始化
     sort_key = []
     new_attributes_value = []
-    write_file_path = './csv/' + path_list[0][:-11] + '.csv'
+    write_file_path = DATA_SET+'/csv-for-'+attribute+'/' + path_list[0][:-11] +'.'+data_type+'.csv'
     write_file = None
-    recipes = load_label("./label-for-learning.json")
+    recipes = load_label(DATA_SET+'/label-for-'+attribute+'.json')
 
     for i in range(batch):
         print(folder_path + path_list[i])
@@ -261,14 +269,12 @@ def read_json_by_path(path, data_type):
 
 
 def main():
-    with open("./conf/local_conf.yaml") as file:
-        # The FullLoader parameter handles the conversion from YAML
-        # scalar values to Python the dictionary format
-        param_list = yaml.load(file, Loader=yaml.FullLoader)
-
-        #read_json_by_folder(param_list["physical"], 'p', 0)
-        read_json_by_folder(param_list["network"], 'n', 0)
-        #read_json_by_folder(param_list["virtual"], 'v', 0)
+    read_json_by_folder(LEARNING_DIR+'/physical-infrastructure-bgpnw2/', 'p', 0, 'learning')
+    read_json_by_folder(LEARNING_DIR+'/network-device-bgpnw2/', 'n', 0, 'learning')
+    read_json_by_folder(LEARNING_DIR+'/virtual-infrastructure-bgpnw2/', 'v', 0, 'learning')
+    read_json_by_folder(EVALUATION_DIR+'/physical-infrastructure-bgpnw2/', 'p', 0, 'evaluation')
+    read_json_by_folder(EVALUATION_DIR+'/network-device-bgpnw2/', 'n', 0, 'evaluation')
+    read_json_by_folder(EVALUATION_DIR+'/virtual-infrastructure-bgpnw2/', 'v', 0, 'evaluation')
 
 if __name__ == "__main__":
     main()
