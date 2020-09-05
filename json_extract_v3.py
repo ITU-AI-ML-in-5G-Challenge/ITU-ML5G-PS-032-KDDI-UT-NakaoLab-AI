@@ -315,6 +315,8 @@ def read_json_by_path(path, data_type):
         print(len(nexthop))
         print(len(prefix))
         all_attributes_key.append('nexthop')
+        all_attributes_key.append('prefix')
+        all_attributes_value.append(len(nexthop))
         all_attributes_value.append(len(prefix))
         return all_attributes_value, all_attributes_key
 
