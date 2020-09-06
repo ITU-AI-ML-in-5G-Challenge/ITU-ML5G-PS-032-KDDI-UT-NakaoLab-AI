@@ -127,7 +127,7 @@ def Return_All_Atributes_v(data, attribute_key, all_attributes_value, all_attrib
                     all_attributes_value.append(data)
                     all_attributes_key.append(str(attribute_key))
 
-def Return_All_Atributes_n(data, attribute_key, all_attributes_value, all_attributes_key):
+def Return_All_Atributes_n(data, attribute_key, all_attributes_value, all_attributes_key, nexthop, prefix):
 
     blacklist = ['']
     data = dictToObj(data)
@@ -136,21 +136,34 @@ def Return_All_Atributes_n(data, attribute_key, all_attributes_value, all_attrib
             if isinstance(item, dict):
                 attribute_key_list, attribute_value_list = Return_Attribute_List(item)
 
-                if attribute_key.split('/')[-1] == 'bgp-route-entry':
-                    key_ = attribute_key + '#' + str(attribute_value_list[0])
+                if attribute_key.split('/')[-1] == 'devices' or \
+                        attribute_key.split('/')[-1] == 'neighbor' or attribute_key.split('/')[-1] == 'bgp-neighbor-summary':
+                    key_ = attribute_key # + '#' + str(data.index(item))
+                    #print ('ss')
+                    #key_ = attribute_key + '#' + str(data.index(item))
+                #elif attribute_key.split('/')[-1] == 'neighbor' or attribute_key.split('/')[-1] == 'bgp-neighbor-summary':
+                    #key_ = attribute_key + '#' + str(data.index(item))
+                elif attribute_key.split('/')[-1] == 'bgp-route-entry':
+                    if str(attribute_value_list[0]) not in prefix:
+                        prefix.append(str(attribute_value_list[0]))
+                    key_ = attribute_key #+ '#' + str(attribute_value_list[0])
                 elif attribute_key.split('/')[-1] == 'bgp-path-entry':
-                    key_ = attribute_key + '#' + str(attribute_value_list[0])
-                elif attribute_key.split('/')[-1] == 'load-avg-minute':
-                    key_ = attribute_key + '#' + str(attribute_value_list[0])
-                elif attribute_key.split('/')[-1] == 'devices':
-                    key_ = attribute_key
-                elif 'name' in attribute_key_list:
-                    key_ = attribute_key + '#' + str(attribute_value_list[attribute_key_list.index('name')])
+                    if str(attribute_value_list[0]) not in nexthop:
+                        nexthop.append(str(attribute_value_list[0]))
+                        #prefix.append(int(1))
+                    #else:
+                        #prefix[nexthop.index(str(attribute_value_list[0]))] += 1
+                    return
+                    #key_ = attribute_key + '#' + str(attribute_value_list[0])
+                #elif attribute_key.split('/')[-1] == 'load-avg-minute':
+                    #key_ = attribute_key + '#' + str(attribute_value_list[0])
+                #elif 'name' in attribute_key_list:
+                    #key_ = attribute_key + '#' + str(attribute_value_list[attribute_key_list.index('name')])
                 else:
                     key_ = attribute_key
                 for i in attribute_key_list:
                     item[i] = dictToObj(item[i])
-                    Return_All_Atributes_n(item[i], key_ + '/' + str(i), all_attributes_value, all_attributes_key)
+                    Return_All_Atributes_n(item[i], key_ + '/' + str(i), all_attributes_value, all_attributes_key, nexthop, prefix)
             else:
                 key_ = attribute_key + str(data.index(item))
                 if key_ not in blacklist:
@@ -161,22 +174,33 @@ def Return_All_Atributes_n(data, attribute_key, all_attributes_value, all_attrib
     else:
         if isinstance(data, dict):
             attribute_key_list, attribute_value_list = Return_Attribute_List(data)
-            if attribute_key.split('/')[-1] == 'bgp-route-entry':
-                key_ = attribute_key + '#' + str(attribute_value_list[0])
-            elif attribute_key.split('/')[-1] == 'bgp-path-entry':
-                key_ = attribute_key + '#' + str(attribute_value_list[0])
-            elif attribute_key.split('/')[-1] == 'load-avg-minute':
-                key_ = attribute_key + '#' + str(attribute_value_list[0])
-            elif attribute_key.split('/')[-1] == 'devices':
+            if attribute_key.split('/')[-1] == 'devices' or attribute_key.split('/')[-1] == 'neighbor'\
+                        or attribute_key.split('/')[-1] == 'bgp-neighbor-summary':
                 key_ = attribute_key
-            elif 'name' in attribute_key_list:
-                key_ = attribute_key + '#' + str(attribute_value_list[attribute_key_list.index('name')])
+            elif attribute_key.split('/')[-1] == 'bgp-route-entry':
+                if str(attribute_value_list[0]) not in prefix:
+                    prefix.append(str(attribute_value_list[0]))
+                key_ = attribute_key #+ '#' + str(attribute_value_list[0])
+            elif attribute_key.split('/')[-1] == 'bgp-path-entry':
+
+                if str(attribute_value_list[0]) not in nexthop:
+                    nexthop.append(str(attribute_value_list[0]))
+                    #prefix.append(int(1))
+                #else:
+                   # prefix[nexthop.index(str(attribute_value_list[0]))] += 1
+                return
+
+                #key_ = attribute_key + '#' + str(attribute_value_list[0])
+            #elif attribute_key.split('/')[-1] == 'load-avg-minute':
+                #key_ = attribute_key + '#' + str(attribute_value_list[0])
+            #elif 'name' in attribute_key_list:
+                #key_ = attribute_key + '#' + str(attribute_value_list[attribute_key_list.index('name')])
             else:
                 key_ = attribute_key
             for item in attribute_key_list:
                 data[item] = dictToObj(data[item])
                 Return_All_Atributes_n(data[item], key_ + '/' + str(item), all_attributes_value,
-                                     all_attributes_key)
+                                     all_attributes_key, nexthop, prefix)
         else:
             if str(attribute_key) not in blacklist:
                 if isinstance(data, (int, float)):
@@ -202,18 +226,37 @@ def read_json_by_folder(folder_path, data_type, batch, attribute):
     # 初始化
     sort_key = []
     new_attributes_value = []
-    write_file_path = DATA_SET+'/csv-for-'+attribute+'/' + path_list[0][:-11] +'.'+data_type+'.csv'
+    #write_file_path = DATA_SET+'/csv-for-'+attribute+'/' + path_list[0][:-11] +'.'+data_type+'.csv'
     write_file = None
     recipes = load_label(DATA_SET+'/label-for-'+attribute+'.json')
-
+    cur_date='inital_date';
     for i in range(batch):
+        write_file_path = DATA_SET+'/csv-for-'+attribute+'/' + path_list[i][:-11] +'.'+data_type+'.csv'
         print(folder_path + path_list[i])
         all_attributes_value, all_attributes_key = read_json_by_path(folder_path + path_list[i], data_type)
         print(len(all_attributes_key))
         # print('all_attributes_key:', all_attributes_key)
         # print('all_attributes_value', all_attributes_value)
-        if i == 0:
-            sort_key = all_attributes_key
+        print(cur_date);
+        if cur_date not in path_list[i]:
+            cur_date = path_list[i][:8];
+            print(cur_date);
+
+            new_key = []
+            new_value = []
+            for index, element in enumerate(all_attributes_key):
+                if element not in new_key:
+                    new_key.append(element)
+                    new_value.append(all_attributes_value[index])
+            all_attributes_key = new_key
+            all_attributes_value = new_value
+            print(len(all_attributes_key))
+            # b = dict(Counter(sort_key))
+            # print({key: value for key, value in b.items() if value > 1})  # 重复元素和重复次数
+            sort_key = new_key
+            #sort_key = all_attributes_key
+            if write_file:
+                write_file.close();
             write_file = WriteToCSV(write_file_path)
 
             all_attributes_key.append('type')
@@ -224,12 +267,24 @@ def read_json_by_folder(folder_path, data_type, batch, attribute):
             all_attributes_value.append(recipes.get_type_code(path_list[i]))
             write_file.add_rows(all_attributes_value)
         else:
+
+            new_key = []
+            new_value = []
+            for index, element in enumerate(all_attributes_key):
+                if element not in new_key:
+                    new_key.append(element)
+                    new_value.append(all_attributes_value[index])
+            all_attributes_key = new_key
+            all_attributes_value = new_value
+            print(len(all_attributes_key))
+
             new_attributes_value = sort_attributes_value(sort_key, all_attributes_key, all_attributes_value)
             new_attributes_value.append(recipes.get_type(path_list[i]))
             new_attributes_value.append(recipes.get_type_code(path_list[i]))
             write_file.add_rows(new_attributes_value)
         # print('new_attributes_value', new_attributes_value)
-    write_file.close()
+    if write_file:
+        write_file.close();
 
 
 def sort_attributes_value(sort_key, all_attributes_key, all_attributes_value):
@@ -259,12 +314,25 @@ def read_json_by_path(path, data_type):
         attribute_key = ''
         all_attributes_value = []
         all_attributes_key = []
+        nexthop = []
+        prefix = []
         if data_type == 'v':
             Return_All_Atributes_v(data, attribute_key, all_attributes_value, all_attributes_key)
         elif data_type == 'n':
-            Return_All_Atributes_n(data, attribute_key, all_attributes_value, all_attributes_key)
+            Return_All_Atributes_n(data, attribute_key, all_attributes_value, all_attributes_key, nexthop, prefix)
         else:
             Return_All_Atributes_p(data, attribute_key, all_attributes_value, all_attributes_key)
+
+
+        #print (len(all_attributes_key))
+        print (len(nexthop))
+        #print (sum(nexthop))
+        #print (prefix)
+        print (len(prefix))
+        #print (all_attributes_key)
+        all_attributes_key.append('nexthop')
+        all_attributes_value.append(len(prefix))
+
         return all_attributes_value, all_attributes_key
 
 
