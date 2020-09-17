@@ -5,7 +5,11 @@ import os
 import yaml
 
 from label_extract import load_label
-from collections import Counter
+
+DATA_SET="/home/itu/datadisk/dataset"
+LEARNING_DIR="/home/itu/datadisk/dataset/data-for-learning"
+EVALUATION_DIR="/home/itu/datadisk/dataset/data-for-evaluation"
+DATE="20200629"
 
 class Dict(dict):
     __setattr__ = dict.__setitem__
@@ -204,9 +208,13 @@ def Return_All_Atributes_n(data, attribute_key, all_attributes_value, all_attrib
                         all_attributes_value.append(data)
                         all_attributes_key.append(str(attribute_key))
 
-def read_json_by_folder(folder_path, data_type, batch=0):
+def read_json_by_folder(folder_path, data_type, batch, attribute):
     path_list = []
     for file_path in os.listdir(folder_path):
+        #print("file_path:"+file_path);
+        #print("date:" + file_path[:8]);
+        #if DATE not in file_path:
+        #    continue;
         if file_path.endswith(".json"):
             path_list.append(file_path)
     path_list.sort(key=lambda x: int(x[:-5]))
@@ -218,30 +226,37 @@ def read_json_by_folder(folder_path, data_type, batch=0):
     # 初始化
     sort_key = []
     new_attributes_value = []
-    write_file_path = './csv/' + path_list[0][:-11] + '.csv'
+    #write_file_path = DATA_SET+'/csv-for-'+attribute+'/' + path_list[0][:-11] +'.'+data_type+'.csv'
     write_file = None
-    recipes = load_label("./label-for-learning.json")
-
+    recipes = load_label(DATA_SET+'/label-for-'+attribute+'.json')
+    cur_date='inital_date';
     for i in range(batch):
+        write_file_path = DATA_SET+'/csv-for-'+attribute+'/' + path_list[i][:-11] +'.'+data_type+'.csv'
         print(folder_path + path_list[i])
         all_attributes_value, all_attributes_key = read_json_by_path(folder_path + path_list[i], data_type)
-        #print(len(all_attributes_key))
+        print(len(all_attributes_key))
         # print('all_attributes_key:', all_attributes_key)
         # print('all_attributes_value', all_attributes_value)
-        if i == 0:
-            #sort_key = all_attributes_key
+        print(cur_date);
+        if cur_date not in path_list[i]:
+            cur_date = path_list[i][:8];
+            print(cur_date);
+
             new_key = []
             new_value = []
-            for index,element in enumerate(all_attributes_key):
+            for index, element in enumerate(all_attributes_key):
                 if element not in new_key:
                     new_key.append(element)
                     new_value.append(all_attributes_value[index])
             all_attributes_key = new_key
             all_attributes_value = new_value
             print(len(all_attributes_key))
-            #b = dict(Counter(sort_key))
-            #print({key: value for key, value in b.items() if value > 1})  # 重复元素和重复次数
+            # b = dict(Counter(sort_key))
+            # print({key: value for key, value in b.items() if value > 1})  # 重复元素和重复次数
             sort_key = new_key
+            #sort_key = all_attributes_key
+            if write_file:
+                write_file.close();
             write_file = WriteToCSV(write_file_path)
 
             all_attributes_key.append('type')
@@ -252,6 +267,7 @@ def read_json_by_folder(folder_path, data_type, batch=0):
             all_attributes_value.append(recipes.get_type_code(path_list[i]))
             write_file.add_rows(all_attributes_value)
         else:
+
             new_key = []
             new_value = []
             for index, element in enumerate(all_attributes_key):
@@ -261,12 +277,14 @@ def read_json_by_folder(folder_path, data_type, batch=0):
             all_attributes_key = new_key
             all_attributes_value = new_value
             print(len(all_attributes_key))
+
             new_attributes_value = sort_attributes_value(sort_key, all_attributes_key, all_attributes_value)
             new_attributes_value.append(recipes.get_type(path_list[i]))
             new_attributes_value.append(recipes.get_type_code(path_list[i]))
             write_file.add_rows(new_attributes_value)
         # print('new_attributes_value', new_attributes_value)
-    write_file.close()
+    if write_file:
+        write_file.close();
 
 
 def sort_attributes_value(sort_key, all_attributes_key, all_attributes_value):
@@ -280,19 +298,13 @@ def sort_attributes_value(sort_key, all_attributes_key, all_attributes_value):
             pass
         else:
             lack_num = lack_num + 1
-            #print (sort_key[i])
+            print (sort_key[i])
         #new_attributes_value[sort_key.index(all_attributes_key[i])] = all_attributes_value[i]
-    #print ("Lack num : ", lack_num)
-    #print (len(all_attributes_key))
+    print ("Lack num : ", lack_num)
     for i in range(len(all_attributes_key)):
         # print (all_attributes_key[i])
         new_attributes_value[sort_key.index(all_attributes_key[i])] = all_attributes_value[i]
     return new_attributes_value
-
-
-#def integrateAll(all_attributes_value, all_attributes_key):
-    #for i, element in enumerate(all_attributes_key):
-        #if 'bgp-route-entry' in element and 'bgp-path-entry' in element:
 
 
 def read_json_by_path(path, data_type):
@@ -311,6 +323,7 @@ def read_json_by_path(path, data_type):
         else:
             Return_All_Atributes_p(data, attribute_key, all_attributes_value, all_attributes_key)
 
+
         #print (len(all_attributes_key))
         print (len(nexthop))
         #print (sum(nexthop))
@@ -319,18 +332,17 @@ def read_json_by_path(path, data_type):
         #print (all_attributes_key)
         all_attributes_key.append('nexthop')
         all_attributes_value.append(len(prefix))
+
         return all_attributes_value, all_attributes_key
 
 
 def main():
-    with open("./conf/local_conf.yaml") as file:
-        # The FullLoader parameter handles the conversion from YAML
-        # scalar values to Python the dictionary format
-        param_list = yaml.load(file, Loader=yaml.FullLoader)
-
-        #read_json_by_folder(param_list["physical"], 'p', 0)
-        read_json_by_folder(param_list["network"], 'n', 0)
-        #read_json_by_folder(param_list["virtual"], 'v', 0)
+    read_json_by_folder(LEARNING_DIR+'/physical-infrastructure-bgpnw2/', 'p', 0, 'learning')
+    read_json_by_folder(LEARNING_DIR+'/network-device-bgpnw2/', 'n', 0, 'learning')
+    read_json_by_folder(LEARNING_DIR+'/virtual-infrastructure-bgpnw2/', 'v', 0, 'learning')
+    read_json_by_folder(EVALUATION_DIR+'/physical-infrastructure-bgpnw2/', 'p', 0, 'evaluation')
+    read_json_by_folder(EVALUATION_DIR+'/network-device-bgpnw2/', 'n', 0, 'evaluation')
+    read_json_by_folder(EVALUATION_DIR+'/virtual-infrastructure-bgpnw2/', 'v', 0, 'evaluation')
 
 if __name__ == "__main__":
     main()

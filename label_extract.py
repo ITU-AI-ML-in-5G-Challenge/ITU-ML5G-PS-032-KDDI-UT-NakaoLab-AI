@@ -20,7 +20,7 @@ from datetime import datetime, timedelta
 type_list = ['ixnetwork-traffic-start', 'node-down', 'node-up', 'interface-down', 'interface-up', 'tap-loss-start',
              'tap-loss-stop', 'tap-delay-start', 'tap-delay-stop', 'ixnetwork-bgp-injection-start',
              'ixnetwork-bgp-injection-stop', 'ixnetwork-bgp-hijacking-start', 'ixnetwork-bgp-hijacking-stop',
-             'ixnetwork-traffic-stop']
+             'ixnetwork-traffic-stop', "unknown"]
 
 
 class Recipes:
@@ -33,11 +33,14 @@ class Recipes:
             started_at = datetime.strptime(json_obj["started_at"], '%Y-%m-%dT%H:%M:%S') + timedelta(hours=9)
             stopped_at = datetime.strptime(json_obj["stopped_at"], '%Y-%m-%dT%H:%M:%S') + timedelta(hours=9)
             next_started_at = stopped_at + timedelta(minutes=5)
-            if started_at < date_time < next_started_at:
+            if started_at <= date_time <= next_started_at:
                 return json_obj["type"]
+        print("started_at: ", started_at, "stopped_at: ", stopped_at, "date_time: ", date_time);
+        return "unknown"
 
     def get_type_code(self, file_name):
         str_type = self.get_type(file_name)
+        print(file_name, str_type);
         return type_list.index(str_type)
 
 
