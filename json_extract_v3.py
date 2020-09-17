@@ -209,11 +209,13 @@ def Return_All_Atributes_n(data, attribute_key, all_attributes_value, all_attrib
                         all_attributes_value.append(data)
                         all_attributes_key.append(str(attribute_key))
 
-def read_json_by_folder(folder_path, data_type, batch=0):
+def read_json_by_folder(folder_path, data_type, batch=0, common_file_list=[]):
     path_list = []
     for file_path in os.listdir(folder_path):
         if DATE not in file_path:
-            continue;
+            continue
+        if len(common_file_list) != 0 and file_path not in common_file_list:
+            continue
         if file_path.endswith(".json"):
             path_list.append(file_path)
     path_list.sort(key=lambda x: int(x[:-5]))
@@ -323,16 +325,26 @@ def read_json_by_path(path, data_type):
 
 
 def main():
+    p_path = TRAINING_DIR+'/physical-infrastructure-bgpnw2/'
+    n_path = TRAINING_DIR+'/network-device-bgpnw2/'
+    v_path = TRAINING_DIR+'/virtual-infrastructure-bgpnw2/'
+
+    p_file_list = os.listdir(p_path)
+    n_file_list = os.listdir(n_path)
+    v_file_list = os.listdir(v_path)
+
+    common_file_list = [i for i in p_file_list if i in n_file_list if i in v_file_list]
+
     try:
-        read_json_by_folder(TRAINING_DIR+'/physical-infrastructure-bgpnw2/', 'p', 0)
+        read_json_by_folder(p_path, 'p', 0, common_file_list)
     except:
         print("except");
     try:
-        read_json_by_folder(TRAINING_DIR+'/network-device-bgpnw2/', 'n', 0)
+        read_json_by_folder(n_path, 'n', 0, common_file_list)
     except:
         print("except");
     try:
-        read_json_by_folder(TRAINING_DIR+'/virtual-infrastructure-bgpnw2/', 'v', 0)
+        read_json_by_folder(v_path, 'v', 0, common_file_list)
     except:
         print("except");
 
