@@ -208,13 +208,15 @@ def Return_All_Atributes_n(data, attribute_key, all_attributes_value, all_attrib
                         all_attributes_value.append(data)
                         all_attributes_key.append(str(attribute_key))
 
-def read_json_by_folder(folder_path, data_type, batch, attribute):
+def read_json_by_folder(folder_path, data_type, batch, attribute, common_file_list=[]):
     path_list = []
     for file_path in os.listdir(folder_path):
         #print("file_path:"+file_path);
         #print("date:" + file_path[:8]);
         #if DATE not in file_path:
         #    continue;
+        if len(common_file_list) != 0 and file_path not in common_file_list:
+            continue
         if file_path.endswith(".json"):
             path_list.append(file_path)
     path_list.sort(key=lambda x: int(x[:-5]))
@@ -337,9 +339,15 @@ def read_json_by_path(path, data_type):
 
 
 def main():
-    read_json_by_folder(LEARNING_DIR+'/physical-infrastructure-bgpnw2/', 'p', 0, 'learning')
-    read_json_by_folder(LEARNING_DIR+'/network-device-bgpnw2/', 'n', 0, 'learning')
-    read_json_by_folder(LEARNING_DIR+'/virtual-infrastructure-bgpnw2/', 'v', 0, 'learning')
+    l_p_path = LEARNING_DIR+'/physical-infrastructure-bgpnw2/'
+    l_n_path = LEARNING_DIR+'/network-device-bgpnw2/'
+    l_v_path = LEARNING_DIR+'/virtual-infrastructure-bgpnw2/'
+
+    common_file_list = [i for i in os.listdir(l_p_path) if i in os.listdir(l_n_path) if i in os.listdir(l_v_path)]
+
+    read_json_by_folder(l_p_path, 'p', 0, 'learning', common_file_list)
+    read_json_by_folder(l_n_path, 'n', 0, 'learning', common_file_list)
+    read_json_by_folder(l_v_path, 'v', 0, 'learning', common_file_list)
     read_json_by_folder(EVALUATION_DIR+'/physical-infrastructure-bgpnw2/', 'p', 0, 'evaluation')
     read_json_by_folder(EVALUATION_DIR+'/network-device-bgpnw2/', 'n', 0, 'evaluation')
     read_json_by_folder(EVALUATION_DIR+'/virtual-infrastructure-bgpnw2/', 'v', 0, 'evaluation')
