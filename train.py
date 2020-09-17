@@ -13,7 +13,7 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeClassifier
 from xgboost import XGBClassifier
-
+import glob
 
 def plot_confusion_matrix(cm, classes,
                           normalize=False,
@@ -55,7 +55,19 @@ pd.set_option('display.max_rows', None)
 pd.set_option('max_colwidth', 100)
 
 # 读取csv
-dataset = pd.read_csv('./csv/physical-20200629.csv')
+path = r'/home/itu/datadisk/dataset/csv-for-learning'
+all_files = glob.glob(path + "/*.n.csv")
+
+li = []
+
+for filename in all_files:
+    print('read_csv:',filename)
+    df = pd.read_csv(filename, index_col=None, header=0)
+    li.append(df)
+
+dataset = pd.concat(li, axis=0, ignore_index=True)
+
+# dataset = pd.read_csv('/home/itu/datadisk/dataset/csv-for-learning/20200629.n.csv')
 
 print('列数:', dataset.shape[1], '行数:', dataset.shape[0])
 # 划分训练测试
