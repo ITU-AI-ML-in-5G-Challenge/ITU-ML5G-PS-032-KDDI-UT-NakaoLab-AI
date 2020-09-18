@@ -170,7 +170,7 @@ def svm_cross_validation(X, y):
     return model
 
 
-def svm(std_X_train, y_train, std_X_test, y_test):
+def train_svm(std_X_train, y_train, std_X_test, y_test):
     last_time = time.time()
     model = svm_cross_validation(std_X_train, y_train.ravel())
     middle_time = time.time()
@@ -283,4 +283,4 @@ if __name__ == '__main__':
 
     mlp(std_X_train, y_train, std_X_test, y_test)
 
-    svm(std_X_train, y_train, std_X_test, y_test)
+    train_svm(std_X_train, y_train, std_X_test, y_test)
