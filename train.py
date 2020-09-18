@@ -199,8 +199,8 @@ if __name__ == '__main__':
     pd.set_option('max_colwidth', 100)
 
     # 读取csv
-    # path = r'/home/itu/datadisk/dataset/csv-for-learning'
-    path = r'/Users/xiafei/Downloads/csv-for-learning/'
+    path = r'/home/itu/datadisk/dataset/csv-for-learning'
+    # path = r'/Users/xiafei/Downloads/csv-for-learning/'
     # all_n_files = glob.glob(path + "/*.n.csv")
     # all_v_files = glob.glob(path + "/*.v.csv")
     # all_p_files = glob.glob(path + "/*.p.csv")
@@ -243,6 +243,10 @@ if __name__ == '__main__':
 
     dataset_n.drop(['type', 'type_code'], axis=1, inplace=True)
     dataset_v.drop(['type', 'type_code'], axis=1, inplace=True)
+
+    dataset_n.rename(columns=lambda x: 'n_' + x, inplace=True)
+    dataset_v.rename(columns=lambda x: 'v_' + x, inplace=True)
+    dataset_p.rename(columns=lambda x: 'p_' + x, inplace=True)
 
     dataset = pd.concat([dataset_n, dataset_v, dataset_p], axis=1, sort=False)
     # 数据集概览
