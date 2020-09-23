@@ -158,7 +158,7 @@ if __name__ == '__main__':
 
     # 重要度
     # fit model no training data
-    model = XGBClassifier()
+    model = XGBClassifier(importance_type='gain')
     model.fit(X, Y)
 
     # plot feature importance
@@ -179,8 +179,11 @@ if __name__ == '__main__':
     predictions = [round(value) for value in y_pred]
     accuracy = accuracy_score(y_test, predictions)
     print("Accuracy: %.2f%%" % (accuracy * 100.0))
+
     # Fit model using each importance as a threshold
-    thresholds = sort(model.feature_importances_)
+    thresholds = sort(model.feature_importances_)[-100:]
+
+    print(thresholds)
     for thresh in thresholds:
         # select features using threshold
         selection = SelectFromModel(model, threshold=thresh, prefit=True)
@@ -194,6 +197,8 @@ if __name__ == '__main__':
         predictions = [round(value) for value in y_pred]
         accuracy = accuracy_score(y_test, predictions)
         print("Thresh=%.3f, n=%d, Accuracy: %.2f%%" % (thresh, select_X_train.shape[1], accuracy * 100.0))
+
+
 
 
 
