@@ -6,10 +6,11 @@ import yaml
 
 from label_extract import load_label
 
-DATA_SET="/home/itu/datadisk/dataset"
-LEARNING_DIR="/home/itu/datadisk/dataset/data-for-learning"
-EVALUATION_DIR="/home/itu/datadisk/dataset/data-for-evaluation"
-DATE="20200629"
+DATA_SET = "/home/itu/datadisk/dataset"
+LEARNING_DIR = "/home/itu/datadisk/dataset/data-for-learning"
+EVALUATION_DIR = "/home/itu/datadisk/dataset/data-for-evaluation"
+DATE = "20200629"
+
 
 class Dict(dict):
     __setattr__ = dict.__setitem__
@@ -55,7 +56,6 @@ def Return_Attribute_List(data):
 
 
 def Return_All_Atributes_p(data, attribute_key, all_attributes_value, all_attributes_key):
-
     blacklist = ['']
     data = dictToObj(data)
     if isinstance(data, list):
@@ -83,17 +83,18 @@ def Return_All_Atributes_p(data, attribute_key, all_attributes_value, all_attrib
             for item in attribute_key_list:
                 data[item] = dictToObj(data[item])
                 Return_All_Atributes_p(data[item], attribute_key + '/' + str(item), all_attributes_value,
-                                     all_attributes_key)
+                                       all_attributes_key)
         else:
             if str(attribute_key) not in blacklist:
                 if isinstance(data, (int, float)):
                     all_attributes_value.append(data)
                     all_attributes_key.append(str(attribute_key))
 
-def Return_All_Atributes_v(data, attribute_key, all_attributes_value, all_attributes_key):
 
-    blacklist = ['/devices#IntGW-01/progress', '/devices#IntGW-02/progress', '/devices#RR-01/progress', '/devices#TR-01/progress',
-                         '/devices#TR-02/progress', ]
+def Return_All_Atributes_v(data, attribute_key, all_attributes_value, all_attributes_key):
+    blacklist = ['/devices#IntGW-01/progress', '/devices#IntGW-02/progress', '/devices#RR-01/progress',
+                 '/devices#TR-01/progress',
+                 '/devices#TR-02/progress', ]
     data = dictToObj(data)
     if isinstance(data, list):
         for item in data:
@@ -120,15 +121,15 @@ def Return_All_Atributes_v(data, attribute_key, all_attributes_value, all_attrib
             for item in attribute_key_list:
                 data[item] = dictToObj(data[item])
                 Return_All_Atributes_v(data[item], attribute_key + '/' + str(item), all_attributes_value,
-                                     all_attributes_key)
+                                       all_attributes_key)
         else:
             if str(attribute_key) not in blacklist:
                 if isinstance(data, (int, float)):
                     all_attributes_value.append(data)
                     all_attributes_key.append(str(attribute_key))
 
-def Return_All_Atributes_n(data, attribute_key, all_attributes_value, all_attributes_key, nexthop, prefix):
 
+def Return_All_Atributes_n(data, attribute_key, all_attributes_value, all_attributes_key, nexthop, prefix):
     blacklist = ['']
     data = dictToObj(data)
     if isinstance(data, list):
@@ -137,33 +138,35 @@ def Return_All_Atributes_n(data, attribute_key, all_attributes_value, all_attrib
                 attribute_key_list, attribute_value_list = Return_Attribute_List(item)
 
                 if attribute_key.split('/')[-1] == 'devices' or \
-                        attribute_key.split('/')[-1] == 'neighbor' or attribute_key.split('/')[-1] == 'bgp-neighbor-summary':
-                    key_ = attribute_key # + '#' + str(data.index(item))
-                    #print ('ss')
-                    #key_ = attribute_key + '#' + str(data.index(item))
-                #elif attribute_key.split('/')[-1] == 'neighbor' or attribute_key.split('/')[-1] == 'bgp-neighbor-summary':
-                    #key_ = attribute_key + '#' + str(data.index(item))
+                        attribute_key.split('/')[-1] == 'neighbor' or attribute_key.split('/')[
+                    -1] == 'bgp-neighbor-summary':
+                    key_ = attribute_key  # + '#' + str(data.index(item))
+                    # print ('ss')
+                    # key_ = attribute_key + '#' + str(data.index(item))
+                # elif attribute_key.split('/')[-1] == 'neighbor' or attribute_key.split('/')[-1] == 'bgp-neighbor-summary':
+                # key_ = attribute_key + '#' + str(data.index(item))
                 elif attribute_key.split('/')[-1] == 'bgp-route-entry':
                     if str(attribute_value_list[0]) not in prefix:
                         prefix.append(str(attribute_value_list[0]))
-                    key_ = attribute_key #+ '#' + str(attribute_value_list[0])
+                    key_ = attribute_key  # + '#' + str(attribute_value_list[0])
                 elif attribute_key.split('/')[-1] == 'bgp-path-entry':
                     if str(attribute_value_list[0]) not in nexthop:
                         nexthop.append(str(attribute_value_list[0]))
-                        #prefix.append(int(1))
-                    #else:
-                        #prefix[nexthop.index(str(attribute_value_list[0]))] += 1
+                        # prefix.append(int(1))
+                    # else:
+                    # prefix[nexthop.index(str(attribute_value_list[0]))] += 1
                     return
-                    #key_ = attribute_key + '#' + str(attribute_value_list[0])
-                #elif attribute_key.split('/')[-1] == 'load-avg-minute':
-                    #key_ = attribute_key + '#' + str(attribute_value_list[0])
-                #elif 'name' in attribute_key_list:
-                    #key_ = attribute_key + '#' + str(attribute_value_list[attribute_key_list.index('name')])
+                    # key_ = attribute_key + '#' + str(attribute_value_list[0])
+                # elif attribute_key.split('/')[-1] == 'load-avg-minute':
+                # key_ = attribute_key + '#' + str(attribute_value_list[0])
+                # elif 'name' in attribute_key_list:
+                # key_ = attribute_key + '#' + str(attribute_value_list[attribute_key_list.index('name')])
                 else:
                     key_ = attribute_key
                 for i in attribute_key_list:
                     item[i] = dictToObj(item[i])
-                    Return_All_Atributes_n(item[i], key_ + '/' + str(i), all_attributes_value, all_attributes_key, nexthop, prefix)
+                    Return_All_Atributes_n(item[i], key_ + '/' + str(i), all_attributes_value, all_attributes_key,
+                                           nexthop, prefix)
             else:
                 key_ = attribute_key + str(data.index(item))
                 if key_ not in blacklist:
@@ -174,33 +177,33 @@ def Return_All_Atributes_n(data, attribute_key, all_attributes_value, all_attrib
     else:
         if isinstance(data, dict):
             attribute_key_list, attribute_value_list = Return_Attribute_List(data)
-            if attribute_key.split('/')[-1] == 'devices' or attribute_key.split('/')[-1] == 'neighbor'\
-                        or attribute_key.split('/')[-1] == 'bgp-neighbor-summary':
+            if attribute_key.split('/')[-1] == 'devices' or attribute_key.split('/')[-1] == 'neighbor' \
+                    or attribute_key.split('/')[-1] == 'bgp-neighbor-summary':
                 key_ = attribute_key
             elif attribute_key.split('/')[-1] == 'bgp-route-entry':
                 if str(attribute_value_list[0]) not in prefix:
                     prefix.append(str(attribute_value_list[0]))
-                key_ = attribute_key #+ '#' + str(attribute_value_list[0])
+                key_ = attribute_key  # + '#' + str(attribute_value_list[0])
             elif attribute_key.split('/')[-1] == 'bgp-path-entry':
 
                 if str(attribute_value_list[0]) not in nexthop:
                     nexthop.append(str(attribute_value_list[0]))
-                    #prefix.append(int(1))
-                #else:
-                   # prefix[nexthop.index(str(attribute_value_list[0]))] += 1
+                    # prefix.append(int(1))
+                # else:
+                # prefix[nexthop.index(str(attribute_value_list[0]))] += 1
                 return
 
-                #key_ = attribute_key + '#' + str(attribute_value_list[0])
-            #elif attribute_key.split('/')[-1] == 'load-avg-minute':
-                #key_ = attribute_key + '#' + str(attribute_value_list[0])
-            #elif 'name' in attribute_key_list:
-                #key_ = attribute_key + '#' + str(attribute_value_list[attribute_key_list.index('name')])
+                # key_ = attribute_key + '#' + str(attribute_value_list[0])
+            # elif attribute_key.split('/')[-1] == 'load-avg-minute':
+            # key_ = attribute_key + '#' + str(attribute_value_list[0])
+            # elif 'name' in attribute_key_list:
+            # key_ = attribute_key + '#' + str(attribute_value_list[attribute_key_list.index('name')])
             else:
                 key_ = attribute_key
             for item in attribute_key_list:
                 data[item] = dictToObj(data[item])
                 Return_All_Atributes_n(data[item], key_ + '/' + str(item), all_attributes_value,
-                                     all_attributes_key, nexthop, prefix)
+                                       all_attributes_key, nexthop, prefix)
         else:
             if str(attribute_key) not in blacklist:
                 if isinstance(data, (int, float)):
@@ -208,12 +211,13 @@ def Return_All_Atributes_n(data, attribute_key, all_attributes_value, all_attrib
                         all_attributes_value.append(data)
                         all_attributes_key.append(str(attribute_key))
 
+
 def read_json_by_folder(folder_path, data_type, batch, attribute, common_file_list=[]):
     path_list = []
     for file_path in os.listdir(folder_path):
-        #print("file_path:"+file_path);
-        #print("date:" + file_path[:8]);
-        #if DATE not in file_path:
+        # print("file_path:"+file_path);
+        # print("date:" + file_path[:8]);
+        # if DATE not in file_path:
         #    continue;
         if len(common_file_list) != 0 and file_path not in common_file_list:
             continue
@@ -228,12 +232,12 @@ def read_json_by_folder(folder_path, data_type, batch, attribute, common_file_li
     # 初始化
     sort_key = []
     new_attributes_value = []
-    #write_file_path = DATA_SET+'/csv-for-'+attribute+'/' + path_list[0][:-11] +'.'+data_type+'.csv'
+    # write_file_path = DATA_SET+'/csv-for-'+attribute+'/' + path_list[0][:-11] +'.'+data_type+'.csv'
     write_file = None
-    recipes = load_label(DATA_SET+'/label-for-'+attribute+'.json')
-    cur_date='inital_date';
+    recipes = load_label(DATA_SET + '/label-for-' + attribute + '.json')
+    cur_date = 'inital_date';
     for i in range(batch):
-        write_file_path = DATA_SET+'/csv-for-'+attribute+'/' + path_list[i][:-11] +'.'+data_type+'.csv'
+        write_file_path = DATA_SET + '/csv-for-' + attribute + '/' + path_list[i][:-11] + '.' + data_type + '.csv'
         print(folder_path + path_list[i])
         all_attributes_value, all_attributes_key = read_json_by_path(folder_path + path_list[i], data_type)
         print(len(all_attributes_key))
@@ -256,7 +260,7 @@ def read_json_by_folder(folder_path, data_type, batch, attribute, common_file_li
             # b = dict(Counter(sort_key))
             # print({key: value for key, value in b.items() if value > 1})  # 重复元素和重复次数
             sort_key = new_key
-            #sort_key = all_attributes_key
+            # sort_key = all_attributes_key
             if write_file:
                 write_file.close();
             write_file = WriteToCSV(write_file_path)
@@ -300,9 +304,9 @@ def sort_attributes_value(sort_key, all_attributes_key, all_attributes_value):
             pass
         else:
             lack_num = lack_num + 1
-            print (sort_key[i])
-        #new_attributes_value[sort_key.index(all_attributes_key[i])] = all_attributes_value[i]
-    print ("Lack num : ", lack_num)
+            print(sort_key[i])
+        # new_attributes_value[sort_key.index(all_attributes_key[i])] = all_attributes_value[i]
+    print("Lack num : ", lack_num)
     for i in range(len(all_attributes_key)):
         # print (all_attributes_key[i])
         new_attributes_value[sort_key.index(all_attributes_key[i])] = all_attributes_value[i]
@@ -325,13 +329,12 @@ def read_json_by_path(path, data_type):
         else:
             Return_All_Atributes_p(data, attribute_key, all_attributes_value, all_attributes_key)
 
-
-        #print (len(all_attributes_key))
-        print (len(nexthop))
-        #print (sum(nexthop))
-        #print (prefix)
-        print (len(prefix))
-        #print (all_attributes_key)
+        # print (len(all_attributes_key))
+        print(len(nexthop))
+        # print (sum(nexthop))
+        # print (prefix)
+        print(len(prefix))
+        # print (all_attributes_key)
         all_attributes_key.append('nexthop')
         all_attributes_value.append(len(prefix))
 
@@ -339,18 +342,25 @@ def read_json_by_path(path, data_type):
 
 
 def main():
-    l_p_path = LEARNING_DIR+'/physical-infrastructure-bgpnw2/'
-    l_n_path = LEARNING_DIR+'/network-device-bgpnw2/'
-    l_v_path = LEARNING_DIR+'/virtual-infrastructure-bgpnw2/'
+    l_p_path = LEARNING_DIR + '/physical-infrastructure-bgpnw2/'
+    l_n_path = LEARNING_DIR + '/network-device-bgpnw2/'
+    l_v_path = LEARNING_DIR + '/virtual-infrastructure-bgpnw2/'
+
+    e_p_path = EVALUATION_DIR + '/physical-infrastructure-bgpnw2/'
+    e_n_path = EVALUATION_DIR + '/network-device-bgpnw2/'
+    e_v_path = EVALUATION_DIR + '/virtual-infrastructure-bgpnw2/'
 
     common_file_list = [i for i in os.listdir(l_p_path) if i in os.listdir(l_n_path) if i in os.listdir(l_v_path)]
+    test_common_file_list = [i for i in os.listdir(e_p_path) if i in os.listdir(e_n_path) if i in os.listdir(e_v_path)]
 
     read_json_by_folder(l_p_path, 'p', 0, 'learning', common_file_list)
     read_json_by_folder(l_n_path, 'n', 0, 'learning', common_file_list)
     read_json_by_folder(l_v_path, 'v', 0, 'learning', common_file_list)
-    read_json_by_folder(EVALUATION_DIR+'/physical-infrastructure-bgpnw2/', 'p', 0, 'evaluation', common_file_list)
-    read_json_by_folder(EVALUATION_DIR+'/network-device-bgpnw2/', 'n', 0, 'evaluation', common_file_list)
-    read_json_by_folder(EVALUATION_DIR+'/virtual-infrastructure-bgpnw2/', 'v', 0, 'evaluation', common_file_list)
+
+    read_json_by_folder(e_p_path, 'p', 0, 'evaluation', test_common_file_list)
+    read_json_by_folder(e_n_path, 'n', 0, 'evaluation', test_common_file_list)
+    read_json_by_folder(e_v_path, 'v', 0, 'evaluation', test_common_file_list)
+
 
 if __name__ == "__main__":
     main()
