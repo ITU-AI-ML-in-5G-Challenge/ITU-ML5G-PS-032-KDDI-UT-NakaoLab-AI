@@ -348,9 +348,9 @@ def main():
     read_json_by_folder(l_p_path, 'p', 0, 'learning', common_file_list)
     read_json_by_folder(l_n_path, 'n', 0, 'learning', common_file_list)
     read_json_by_folder(l_v_path, 'v', 0, 'learning', common_file_list)
-    read_json_by_folder(EVALUATION_DIR+'/physical-infrastructure-bgpnw2/', 'p', 0, 'evaluation')
-    read_json_by_folder(EVALUATION_DIR+'/network-device-bgpnw2/', 'n', 0, 'evaluation')
-    read_json_by_folder(EVALUATION_DIR+'/virtual-infrastructure-bgpnw2/', 'v', 0, 'evaluation')
+    read_json_by_folder(EVALUATION_DIR+'/physical-infrastructure-bgpnw2/', 'p', 0, 'evaluation', common_file_list)
+    read_json_by_folder(EVALUATION_DIR+'/network-device-bgpnw2/', 'n', 0, 'evaluation', common_file_list)
+    read_json_by_folder(EVALUATION_DIR+'/virtual-infrastructure-bgpnw2/', 'v', 0, 'evaluation', common_file_list)
 
 if __name__ == "__main__":
     main()
