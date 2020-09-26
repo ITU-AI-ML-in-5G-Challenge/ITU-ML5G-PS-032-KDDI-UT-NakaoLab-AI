@@ -7,8 +7,11 @@ import yaml
 from label_extract import load_label
 
 DATA_SET = "/home/itu/datadisk/dataset"
+# DATA_SET = "/Users/xiafei/Downloads/itu-dataset"
 LEARNING_DIR = "/home/itu/datadisk/dataset/data-for-learning"
+# LEARNING_DIR = "/Users/xiafei/Downloads/itu-dataset/data-for-learning"
 EVALUATION_DIR = "/home/itu/datadisk/dataset/data-for-evaluation"
+# EVALUATION_DIR = "/Users/xiafei/Downloads/itu-dataset/data-for-evaluation"
 DATE = "20200629"
 
 
@@ -334,10 +337,10 @@ def read_json_by_path(path, data_type):
             Return_All_Atributes_p(data, attribute_key, all_attributes_value, all_attributes_key)
 
         # print (len(all_attributes_key))
-        print(len(nexthop))
+        # print(len(nexthop))
         # print (sum(nexthop))
         # print (prefix)
-        print(len(prefix))
+        # print(len(prefix))
         # print (all_attributes_key)
         all_attributes_key.append('nexthop')
         all_attributes_value.append(len(prefix))

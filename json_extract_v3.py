@@ -8,6 +8,7 @@ from label_extract import load_label
 
 DATA_SET="/home/itu/datadisk/dataset"
 TRAINING_DIR="/home/itu/datadisk/dataset/data-for-learning"
+EVALUATION_DIR = "/home/itu/datadisk/dataset/data-for-evaluation"
 DATE="20200629"
 
 class Dict(dict):
@@ -333,7 +334,12 @@ def main():
     n_file_list = os.listdir(n_path)
     v_file_list = os.listdir(v_path)
 
+    e_p_path = EVALUATION_DIR + '/physical-infrastructure-bgpnw2/'
+    e_n_path = EVALUATION_DIR + '/network-device-bgpnw2/'
+    e_v_path = EVALUATION_DIR + '/virtual-infrastructure-bgpnw2/'
+
     common_file_list = [i for i in p_file_list if i in n_file_list if i in v_file_list]
+    test_common_file_list = [i for i in os.listdir(e_p_path) if i in os.listdir(e_n_path) if i in os.listdir(e_v_path)]
 
     try:
         read_json_by_folder(p_path, 'p', 0, common_file_list)
