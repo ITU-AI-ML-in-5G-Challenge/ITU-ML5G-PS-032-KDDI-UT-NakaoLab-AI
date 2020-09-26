@@ -74,9 +74,10 @@ def Return_All_Atributes_p(data, attribute_key, all_attributes_value, all_attrib
             else:
                 key_ = attribute_key + str(data.index(item))
                 if key_ not in blacklist:
-                    if isinstance(item, (int, float)):
-                        all_attributes_value.append(item)
-                        all_attributes_key.append(key_)
+                    if isinstance(data, (int, float)):
+                        if (type(data) != bool):
+                            all_attributes_value.append(data)
+                            all_attributes_key.append(str(attribute_key))
     else:
         if isinstance(data, dict):
             attribute_key_list, attribute_value_list = Return_Attribute_List(data)
@@ -87,8 +88,9 @@ def Return_All_Atributes_p(data, attribute_key, all_attributes_value, all_attrib
         else:
             if str(attribute_key) not in blacklist:
                 if isinstance(data, (int, float)):
-                    all_attributes_value.append(data)
-                    all_attributes_key.append(str(attribute_key))
+                    if (type(data) != bool):
+                        all_attributes_value.append(data)
+                        all_attributes_key.append(str(attribute_key))
 
 
 def Return_All_Atributes_v(data, attribute_key, all_attributes_value, all_attributes_key):
@@ -112,9 +114,10 @@ def Return_All_Atributes_v(data, attribute_key, all_attributes_value, all_attrib
             else:
                 key_ = attribute_key + str(data.index(item))
                 if key_ not in blacklist:
-                    if isinstance(item, (int, float)):
-                        all_attributes_value.append(item)
-                        all_attributes_key.append(key_)
+                    if isinstance(data, (int, float)):
+                        if (type(data) != bool):
+                            all_attributes_value.append(data)
+                            all_attributes_key.append(str(attribute_key))
     else:
         if isinstance(data, dict):
             attribute_key_list, attribute_value_list = Return_Attribute_List(data)
@@ -125,8 +128,9 @@ def Return_All_Atributes_v(data, attribute_key, all_attributes_value, all_attrib
         else:
             if str(attribute_key) not in blacklist:
                 if isinstance(data, (int, float)):
-                    all_attributes_value.append(data)
-                    all_attributes_key.append(str(attribute_key))
+                    if (type(data) != bool):
+                        all_attributes_value.append(data)
+                        all_attributes_key.append(str(attribute_key))
 
 
 def Return_All_Atributes_n(data, attribute_key, all_attributes_value, all_attributes_key, nexthop, prefix):
