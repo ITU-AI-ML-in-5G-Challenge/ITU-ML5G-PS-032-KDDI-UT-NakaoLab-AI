@@ -199,10 +199,10 @@ if __name__ == '__main__':
     pd.set_option('max_colwidth', 100)
 
     # 读取csv
-    # path = r'/home/itu/datadisk/dataset/csv-for-learning/'
-    path = r'/Users/xiafei/Downloads/itu-dataset/csv-for-learning/'
-    # test_path = r'/home/itu/datadisk/dataset/csv-for-evaluation/'
-    test_path = r'/Users/xiafei/Downloads/itu-dataset/csv-for-evaluation/'
+    path = r'/home/itu/datadisk/dataset/csv-for-learning/'
+    # path = r'/Users/xiafei/Downloads/itu-dataset/csv-for-learning/'
+    test_path = r'/home/itu/datadisk/dataset/csv-for-evaluation/'
+    # test_path = r'/Users/xiafei/Downloads/itu-dataset/csv-for-evaluation/'
     # all_n_files = glob.glob(path + "/*.n.csv")
     # all_v_files = glob.glob(path + "/*.v.csv")
     # all_p_files = glob.glob(path + "/*.p.csv")
