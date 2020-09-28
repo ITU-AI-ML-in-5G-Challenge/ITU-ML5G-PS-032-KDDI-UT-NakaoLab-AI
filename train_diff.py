@@ -14,6 +14,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeClassifier
 from xgboost import XGBClassifier
 
+dataset_path = '/Users/xiafei/Downloads/itu-dataset/diff_dataset.csv'
+testset_path = '/Users/xiafei/Downloads/itu-dataset/diff_testset.csv'
 
 def plot_confusion_matrix(cm, classes,
                           normalize=False,
@@ -71,7 +73,7 @@ def decision_tree(X_train, y_train, X_test, y_test):
     print('classification report dt:')
     print(classification_report(y_test, y_pred))
 
-    plot_confusion_matrix(cm, classes=['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13'],
+    plot_confusion_matrix(cm, classes=['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13'],
                           normalize=True, title='Normalized confusion matrix')
 
     plt.show()
@@ -99,7 +101,7 @@ def random_forest(X_train, y_train, X_test, y_test):
     print('classification report rf:')
     print(classification_report(y_test, y_pred))
 
-    plot_confusion_matrix(cm, classes=['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13'],
+    plot_confusion_matrix(cm, classes=['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13'],
                           normalize=True, title='Normalized confusion matrix')
 
     plt.show()
@@ -108,7 +110,7 @@ def random_forest(X_train, y_train, X_test, y_test):
 # XGBoost
 def xgboost(X_train, y_train, X_test, y_test):
     last_time = time.time()
-    xgb = XGBClassifier(n_estimators=300, objective='multi:softmax', num_class=13, random_state=0)
+    xgb = XGBClassifier(n_estimators=300, n_jobs=-1, objective='multi:softmax', num_class=12, random_state=0)
 
     xgb.fit(X_train, y_train)
     middle_time = time.time()
@@ -127,7 +129,7 @@ def xgboost(X_train, y_train, X_test, y_test):
     print('classification report xgb:')
     print(classification_report(y_test, y_pred))
 
-    plot_confusion_matrix(cm, classes=['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13'],
+    plot_confusion_matrix(cm, classes=['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13'],
                           normalize=True, title='Normalized confusion matrix')
 
     plt.show()
@@ -150,7 +152,7 @@ def mlp(std_X_train, y_train, std_X_test, y_test):
     print('classification report MLP:')
     print(classification_report(y_test, y_pred))
 
-    plot_confusion_matrix(cm, classes=['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13'],
+    plot_confusion_matrix(cm, classes=['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13'],
                           normalize=True, title='Normalized confusion matrix')
 
     plt.show()
@@ -184,7 +186,7 @@ def train_svm(std_X_train, y_train, std_X_test, y_test):
     print('classification report svm:')
     print(classification_report(y_test, y_pred))
 
-    plot_confusion_matrix(cm, classes=['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13'],
+    plot_confusion_matrix(cm, classes=['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13'],
                           normalize=True, title='Normalized confusion matrix')
 
     plt.show()
@@ -192,8 +194,15 @@ def train_svm(std_X_train, y_train, std_X_test, y_test):
 
 if __name__ == '__main__':
     # train
-    dataset = pd.read_csv('diff_dataset.csv', index_col=None, header=0)
-    testset = pd.read_csv('diff_testset.csv', index_col=None, header=0)
+    dataset = pd.read_csv(dataset_path, index_col=None, header=0)
+    testset = pd.read_csv(testset_path, index_col=None, header=0)
+
+    # 删除状态0
+    data_drop_index = dataset[dataset['v_type_code'] == 0].index.tolist()
+    dataset.drop(index=data_drop_index, axis=0, inplace=True)
+    test_drop_index = testset[testset['v_type_code'] == 0].index.tolist()
+    testset.drop(index=test_drop_index, axis=0, inplace=True)
+
     print('dataset:')
     print(dataset.shape)
     print('testset:')
@@ -208,7 +217,6 @@ if __name__ == '__main__':
 
     X = pd.concat([X_train, X_test], axis=0, ignore_index=True, sort=False)
     Y = pd.concat([y_train, y_test], axis=0, ignore_index=True, sort=False)
-
 
     #     X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.2)
     print(X.shape, Y.shape)

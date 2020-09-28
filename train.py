@@ -14,6 +14,12 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeClassifier
 from xgboost import XGBClassifier
 
+# 读取csv
+path = r'/home/itu/datadisk/dataset/csv-for-learning/'
+# path = r'/Users/xiafei/Downloads/itu-dataset/csv-for-learning/'
+test_path = r'/home/itu/datadisk/dataset/csv-for-evaluation/'
+# test_path = r'/Users/xiafei/Downloads/itu-dataset/csv-for-evaluation/'
+
 
 def plot_confusion_matrix(cm, classes,
                           normalize=False,
@@ -71,7 +77,7 @@ def decision_tree(X_train, y_train, X_test, y_test):
     print('classification report dt:')
     print(classification_report(y_test, y_pred))
 
-    plot_confusion_matrix(cm, classes=['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13'],
+    plot_confusion_matrix(cm, classes=['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13'],
                           normalize=True, title='Normalized confusion matrix')
 
     plt.show()
@@ -99,7 +105,7 @@ def random_forest(X_train, y_train, X_test, y_test):
     print('classification report rf:')
     print(classification_report(y_test, y_pred))
 
-    plot_confusion_matrix(cm, classes=['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13'],
+    plot_confusion_matrix(cm, classes=['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13'],
                           normalize=True, title='Normalized confusion matrix')
 
     plt.show()
@@ -108,7 +114,7 @@ def random_forest(X_train, y_train, X_test, y_test):
 # XGBoost
 def xgboost(X_train, y_train, X_test, y_test):
     last_time = time.time()
-    xgb = XGBClassifier(n_estimators=300, objective='multi:softmax', num_class=13, random_state=0)
+    xgb = XGBClassifier(n_estimators=300, objective='multi:softmax', num_class=12, random_state=0)
 
     xgb.fit(X_train, y_train)
     middle_time = time.time()
@@ -127,7 +133,7 @@ def xgboost(X_train, y_train, X_test, y_test):
     print('classification report xgb:')
     print(classification_report(y_test, y_pred))
 
-    plot_confusion_matrix(cm, classes=['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13'],
+    plot_confusion_matrix(cm, classes=['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13'],
                           normalize=True, title='Normalized confusion matrix')
 
     plt.show()
@@ -150,7 +156,7 @@ def mlp(std_X_train, y_train, std_X_test, y_test):
     print('classification report MLP:')
     print(classification_report(y_test, y_pred))
 
-    plot_confusion_matrix(cm, classes=['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13'],
+    plot_confusion_matrix(cm, classes=['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13'],
                           normalize=True, title='Normalized confusion matrix')
 
     plt.show()
@@ -184,10 +190,19 @@ def train_svm(std_X_train, y_train, std_X_test, y_test):
     print('classification report svm:')
     print(classification_report(y_test, y_pred))
 
-    plot_confusion_matrix(cm, classes=['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13'],
+    plot_confusion_matrix(cm, classes=['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13'],
                           normalize=True, title='Normalized confusion matrix')
 
     plt.show()
+
+
+def bool_to_int(X_train):
+    for i in X_train.columns:
+        if str(X_train[i].dtype) == 'object':
+            X_train[i] = pd.to_numeric(X_train[i])
+            X_train[i] = X_train[i].astype('int')
+        elif str(X_train[i].dtype) == 'bool':
+            X_train[i] = X_train[i].astype('int')
 
 
 if __name__ == '__main__':
@@ -198,11 +213,6 @@ if __name__ == '__main__':
     # 设置value的显示长度为100，默认为50
     pd.set_option('max_colwidth', 100)
 
-    # 读取csv
-    path = r'/home/itu/datadisk/dataset/csv-for-learning/'
-    # path = r'/Users/xiafei/Downloads/itu-dataset/csv-for-learning/'
-    test_path = r'/home/itu/datadisk/dataset/csv-for-evaluation/'
-    # test_path = r'/Users/xiafei/Downloads/itu-dataset/csv-for-evaluation/'
     # all_n_files = glob.glob(path + "/*.n.csv")
     # all_v_files = glob.glob(path + "/*.v.csv")
     # all_p_files = glob.glob(path + "/*.p.csv")
@@ -300,6 +310,7 @@ if __name__ == '__main__':
     test_p.rename(columns=lambda x: 'p_' + x, inplace=True)
     test_p['common_time_index'] = test_p['p_/time']
 
+    # 因为两边数据可能不等，所以用时间index做连接
     # dataset = pd.concat([dataset_n, dataset_v, dataset_p], axis=1, sort=False)
     dataset_pn = pd.merge(dataset_p, dataset_n, how='inner', left_index=True, right_index=True)
     dataset = pd.merge(dataset_pn, dataset_v, how='inner', on=['common_time_index'])
@@ -308,8 +319,27 @@ if __name__ == '__main__':
     testset_pn = pd.merge(test_p, test_n, how='inner', left_index=True, right_index=True)
     testset = pd.merge(testset_pn, test_v, how='inner', on=['common_time_index'])
 
+    #去掉空值等
     dataset.dropna(axis=0, how='any', inplace=True)
     testset.dropna(axis=0, how='any', inplace=True)
+
+    # 删除状态0
+    data_drop_index = dataset[dataset['v_type_code'] == 0].index.tolist()
+    dataset.drop(index=data_drop_index, axis=0, inplace=True)
+    test_drop_index = testset[testset['v_type_code'] == 0].index.tolist()
+    testset.drop(index=test_drop_index, axis=0, inplace=True)
+
+    # 去掉时间对结果的影响
+    dataset.drop(['common_time_index'], axis=1, inplace=True)
+    testset.drop(['common_time_index'], axis=1, inplace=True)
+    dataset.drop(['p_/time'], axis=1, inplace=True)
+    testset.drop(['p_/time'], axis=1, inplace=True)
+    dataset.drop(['v_/time'], axis=1, inplace=True)
+    testset.drop(['v_/time'], axis=1, inplace=True)
+
+    # from sklearn.utils import shuffle
+    # 打乱训练集 发现没啥用
+    # dataset = shuffle(dataset)
 
     print('dataset:')
     print(dataset.shape)
@@ -331,22 +361,14 @@ if __name__ == '__main__':
     y_train = dataset[column[-1]]
     y_test = testset[column[-1]]
 
+    y_train = pd.to_numeric(y_train)
+    y_test = pd.to_numeric(y_test)
+
     # 处理bool类型和object类型
     # {'int64': 337, 'float64': 662, 'bool': 68, 'object': 1}
     # {'int64': 281, 'float64': 718, 'object': 69}
-    for i in X_train.columns:
-        if str(X_train[i].dtype) == 'object':
-            X_train[i] = pd.to_numeric(X_train[i])
-            X_train[i] = X_train[i].astype('int')
-        elif str(X_train[i].dtype) == 'bool':
-            X_train[i] = X_train[i].astype('int')
-
-    for i in X_test.columns:
-        if str(X_test[i].dtype) == 'object':
-            X_test[i] = pd.to_numeric(X_test[i])
-            X_test[i] = X_test[i].astype('int')
-        elif str(X_test[i].dtype) == 'bool':
-            X_test[i] = X_test[i].astype('int')
+    # bool_to_int(X_train)
+    # bool_to_int(X_test)
 
     X = pd.concat([X_train, X_test], axis=0, ignore_index=True, sort=False)
     Y = pd.concat([y_train, y_test], axis=0, ignore_index=True, sort=False)
