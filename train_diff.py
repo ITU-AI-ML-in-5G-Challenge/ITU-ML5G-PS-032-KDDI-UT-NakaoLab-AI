@@ -197,10 +197,17 @@ if __name__ == '__main__':
     dataset = pd.read_csv(dataset_path, index_col=None, header=0)
     testset = pd.read_csv(testset_path, index_col=None, header=0)
 
-    # 删除状态0
-    data_drop_index = dataset[dataset['v_type_code'] == 0].index.tolist()
+    # 删除修复相关的状态
+    # 0: ixnetwork-traffic-start
+    # 2: node-up
+    # 4: interface-up
+    # 6: tap-loss-stop
+    # 8: tap-delay-stop
+    # 10: ixnetwork-bgp-injection-stop
+    # 12: ixnetwork-bgp-hijacking-stop
+    data_drop_index = dataset[dataset['v_type_code'] % 2 == 0].index.tolist()
     dataset.drop(index=data_drop_index, axis=0, inplace=True)
-    test_drop_index = testset[testset['v_type_code'] == 0].index.tolist()
+    test_drop_index = testset[testset['v_type_code'] % 2 == 0].index.tolist()
     testset.drop(index=test_drop_index, axis=0, inplace=True)
 
     print('dataset:')
