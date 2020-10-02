@@ -232,7 +232,7 @@ def read_json_by_folder(folder_path, data_type, batch, attribute, common_file_li
             path_list.append(file_path)
     path_list.sort(key=lambda x: int(x[:-5]))
 
-    print('file_count:', len(path_list))
+    #print('file_count:', len(path_list))
     if batch == 0:
         batch = len(path_list)
 
@@ -247,13 +247,13 @@ def read_json_by_folder(folder_path, data_type, batch, attribute, common_file_li
         write_file_path = DATA_SET + '/csv-for-' + attribute + '/' + path_list[i][:-11] + '.' + data_type + '.csv'
         print(folder_path + path_list[i])
         all_attributes_value, all_attributes_key = read_json_by_path(folder_path + path_list[i], data_type)
-        print(len(all_attributes_key))
+        #print(len(all_attributes_key))
         # print('all_attributes_key:', all_attributes_key)
         # print('all_attributes_value', all_attributes_value)
         print(cur_date);
         if cur_date not in path_list[i]:
             cur_date = path_list[i][:8];
-            print(cur_date);
+            #print(cur_date);
 
             new_key = []
             new_value = []
@@ -263,7 +263,7 @@ def read_json_by_folder(folder_path, data_type, batch, attribute, common_file_li
                     new_value.append(all_attributes_value[index])
             all_attributes_key = new_key
             all_attributes_value = new_value
-            print(len(all_attributes_key))
+            #print(len(all_attributes_key))
             # b = dict(Counter(sort_key))
             # print({key: value for key, value in b.items() if value > 1})  # 重复元素和重复次数
             sort_key = new_key
@@ -289,7 +289,7 @@ def read_json_by_folder(folder_path, data_type, batch, attribute, common_file_li
                     new_value.append(all_attributes_value[index])
             all_attributes_key = new_key
             all_attributes_value = new_value
-            print(len(all_attributes_key))
+            #print(len(all_attributes_key))
 
             new_attributes_value = sort_attributes_value(sort_key, all_attributes_key, all_attributes_value)
             new_attributes_value.append(recipes.get_type(path_list[i]))
@@ -313,7 +313,7 @@ def sort_attributes_value(sort_key, all_attributes_key, all_attributes_value):
             lack_num = lack_num + 1
             print(sort_key[i])
         # new_attributes_value[sort_key.index(all_attributes_key[i])] = all_attributes_value[i]
-    print("Lack num : ", lack_num)
+    #print("Lack num : ", lack_num)
     for i in range(len(all_attributes_key)):
         # print (all_attributes_key[i])
         new_attributes_value[sort_key.index(all_attributes_key[i])] = all_attributes_value[i]
@@ -333,17 +333,15 @@ def read_json_by_path(path, data_type):
             Return_All_Atributes_v(data, attribute_key, all_attributes_value, all_attributes_key)
         elif data_type == 'n':
             Return_All_Atributes_n(data, attribute_key, all_attributes_value, all_attributes_key, nexthop, prefix)
+            all_attributes_key.append('nexthop')
+            all_attributes_key.append('prefix')
+            all_attributes_value.append(len(nexthop))
+            all_attributes_value.append(len(prefix))
         else:
             Return_All_Atributes_p(data, attribute_key, all_attributes_value, all_attributes_key)
 
-        # print (len(all_attributes_key))
-        # print(len(nexthop))
-        # print (sum(nexthop))
-        # print (prefix)
-        # print(len(prefix))
-        # print (all_attributes_key)
-        all_attributes_key.append('nexthop')
-        all_attributes_value.append(len(prefix))
+        #print(len(nexthop))
+        #print(len(prefix))
 
         return all_attributes_value, all_attributes_key
 
