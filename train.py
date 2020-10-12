@@ -14,13 +14,6 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeClassifier
 from xgboost import XGBClassifier
 
-# 读取csv
-path = r'/home/itu/datadisk/dataset/csv-for-learning/'
-# path = r'/Users/xiafei/Downloads/itu-dataset/csv-for-learning/'
-test_path = r'/home/itu/datadisk/dataset/csv-for-evaluation/'
-# test_path = r'/Users/xiafei/Downloads/itu-dataset/csv-for-evaluation/'
-
-
 def plot_confusion_matrix(cm, classes,
                           normalize=False,
                           title='Confusion matrix',
