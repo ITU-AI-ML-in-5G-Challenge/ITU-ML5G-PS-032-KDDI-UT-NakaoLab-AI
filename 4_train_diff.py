@@ -1,6 +1,6 @@
 import itertools
 import time
-
+import yaml
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -13,40 +13,10 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeClassifier
 from xgboost import XGBClassifier
 
-dataset_path = './csv/diff_dataset.csv'
-testset_path = './csv/diff_testset.csv'
-
-
-def plot_confusion_matrix(cm, classes,
-                          normalize=False,
-                          title='Confusion matrix',
-                          cmap=plt.cm.Blues):
-    if normalize:
-        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-        print("Normalized confusion matrix")
-    else:
-        print('Confusion matrix, without normalization')
-
-    print(cm)
-
-    plt.imshow(cm, interpolation='nearest', cmap=cmap)
-    plt.title(title)
-    plt.colorbar()
-    tick_marks = np.arange(len(classes))
-    plt.xticks(tick_marks, classes, rotation=45)
-    plt.yticks(tick_marks, classes)
-
-    fmt = '.4f' if normalize else 'd'
-    thresh = cm.max() / 2.
-    for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
-        plt.text(j, i, format(cm[i, j], fmt),
-                 horizontalalignment="center",
-                 color="red")
-        # color="red" if cm[i, j] > thresh else "black")
-    # plt.set_tight_layout(True)
-    plt.tight_layout()
-    plt.ylabel('True label')
-    plt.xlabel('Predicted label')
+with open('./conf.yaml', 'r') as f:
+    conf = yaml.load(f.read(), Loader=yaml.SafeLoader)
+    dataset_path = conf['CSV_DIFF_DATA_SET']
+    testset_path = conf['CSV_DIFF_TEST_SET']
 
 
 # Decision tree
@@ -64,19 +34,14 @@ def decision_tree(X_train, y_train, X_test, y_test, show=False):
 
     print("DT Accuracy: %.2f" % accuracy_score(y_test, y_pred))
 
-    print("训练耗时： {}".format(middle_time - last_time))
-    print("测试耗时： {}".format(current_time - middle_time))
+    print("train time： {}".format(middle_time - last_time))
+    print("test time： {}".format(current_time - middle_time))
     if show:
         cm = confusion_matrix(y_test, y_pred)
         print('confusion matrix dt:')
         print(cm)
         print('classification report dt:')
         print(classification_report(y_test, y_pred))
-        # '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13'
-        plot_confusion_matrix(cm, classes=['1', '3', '5', '7', '9', '11', '13'],
-                              normalize=True, title='Normalized confusion matrix')
-
-        plt.show()
 
 
 # random forest
@@ -93,19 +58,14 @@ def random_forest(X_train, y_train, X_test, y_test, show=False):
 
     print("RF Accuracy: %.2f" % accuracy_score(y_test, y_pred))
 
-    print("训练耗时： {}".format(middle_time - last_time))
-    print("测试耗时： {}".format(current_time - middle_time))
+    print("train time： {}".format(middle_time - last_time))
+    print("test time： {}".format(current_time - middle_time))
     if show:
         cm = confusion_matrix(y_test, y_pred)
         print('confusion matrix rf:')
         print(cm)
         print('classification report rf:')
         print(classification_report(y_test, y_pred))
-        # '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13'
-        plot_confusion_matrix(cm, classes=['1', '3', '5', '7', '9', '11', '13'],
-                              normalize=True, title='Normalized confusion matrix')
-
-        plt.show()
 
 
 # XGBoost
@@ -122,19 +82,14 @@ def xgboost(X_train, y_train, X_test, y_test, show=False):
 
     print("XGBOOST Accuracy: %.2f" % accuracy_score(y_test, y_pred))
 
-    print("训练耗时： {}".format(middle_time - last_time))
-    print("测试耗时： {}".format(current_time - middle_time))
+    print("train time： {}".format(middle_time - last_time))
+    print("test time： {}".format(current_time - middle_time))
     if show:
         cm = confusion_matrix(y_test, y_pred)
         print('confusion matrix xgb:')
         print(cm)
         print('classification report xgb:')
         print(classification_report(y_test, y_pred))
-        # '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13'
-        plot_confusion_matrix(cm, classes=['1', '3', '5', '7', '9', '11', '13'],
-                              normalize=True, title='Normalized confusion matrix')
-
-        plt.show()
 
 
 # MLP
@@ -155,11 +110,6 @@ def mlp(std_X_train, y_train, std_X_test, y_test, show=False):
         print(cm)
         print('classification report MLP:')
         print(classification_report(y_test, y_pred))
-        # '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13'
-        plot_confusion_matrix(cm, classes=['1', '3', '5', '7', '9', '11', '13'],
-                              normalize=True, title='Normalized confusion matrix')
-
-        plt.show()
 
 
 # SVM
@@ -183,23 +133,18 @@ def train_svm(std_X_train, y_train, std_X_test, y_test, show=False):
     y_pred = model.predict(std_X_test)
     print("SVM Accuracy: %.2f" % accuracy_score(y_test, y_pred))
     current_time = time.time()
-    print("训练耗时： {}".format(middle_time - last_time))
+    print("train time： {}".format(middle_time - last_time))
     if show:
-        print("测试耗时： {}".format(current_time - middle_time))
+        print("test time： {}".format(current_time - middle_time))
         cm = confusion_matrix(y_test, y_pred)
         print('confusion matrix svm:')
         print(cm)
         print('classification report svm:')
         print(classification_report(y_test, y_pred))
-        # '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13'
-        plot_confusion_matrix(cm, classes=['1', '3', '5', '7', '9', '11', '13'],
-                              normalize=True, title='Normalized confusion matrix')
-
-        plt.show()
 
 
-if __name__ == '__main__':
-    print('读取diff数据集:')
+def main():
+    print('reading diff dataset:')
     dataset = pd.read_csv(dataset_path, index_col=None, header=0)
     testset = pd.read_csv(testset_path, index_col=None, header=0)
 
@@ -221,7 +166,7 @@ if __name__ == '__main__':
     print('testset:')
     print(testset.shape)
 
-    # 划分训练测试
+    # train test split
     column = dataset.columns
     X_train = dataset[column[:-1]]
     X_test = testset[column[:-1]]
@@ -240,12 +185,16 @@ if __name__ == '__main__':
     std_X_train = ss.fit_transform(X_train)
     std_X_test = ss.fit_transform(X_test)
 
-    decision_tree(X_train, y_train, X_test, y_test)
+    decision_tree(X_train, y_train, X_test, y_test, show=True)
 
-    random_forest(X_train, y_train, X_test, y_test)
+    random_forest(X_train, y_train, X_test, y_test, show=True)
 
-    xgboost(X_train, y_train, X_test, y_test)
+    xgboost(X_train, y_train, X_test, y_test, show=True)
 
-    mlp(std_X_train, y_train, std_X_test, y_test)
+    mlp(std_X_train, y_train, std_X_test, y_test, show=True)
 
-    train_svm(std_X_train, y_train, std_X_test, y_test)
+    train_svm(std_X_train, y_train, std_X_test, y_test, show=True)
+
+
+if __name__ == '__main__':
+    main()

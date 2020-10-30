@@ -1,9 +1,13 @@
 import pandas as pd
+import yaml
 
-train_path = r'/home/itu/datadisk/dataset/csv-for-learning/'
-# train_path = r'/Users/xiafei/Downloads/itu-dataset/csv-for-learning/'
-test_path = r'/home/itu/datadisk/dataset/csv-for-evaluation/'
-# test_path = r'/Users/xiafei/Downloads/itu-dataset/csv-for-evaluation/'
+with open('./conf.yaml', 'r') as f:
+    conf = yaml.load(f.read(), Loader=yaml.SafeLoader)
+    train_path = conf['TRAIN_PATH']
+    test_path = conf['TEST_PATH']
+    dataset_path = conf['CSV_DATA_SET']
+    testset_path = conf['CSV_TEST_SET']
+
 
 # Combining three types of csv.
 def df_combine(train_n_files, train_v_files, train_p_files, test_n_files, test_v_files, test_p_files):
@@ -82,7 +86,7 @@ def df_combine(train_n_files, train_v_files, train_p_files, test_n_files, test_v
     return dataset, testset
 
 
-if __name__ == '__main__':
+def main():
     # all_n_files = glob.glob(path + "/*.n.csv")
     # all_v_files = glob.glob(path + "/*.v.csv")
     # all_p_files = glob.glob(path + "/*.p.csv")
@@ -108,9 +112,13 @@ if __name__ == '__main__':
 
     dataset, testset = df_combine(train_n_files, train_v_files, train_p_files, test_n_files, test_v_files, test_p_files)
     print('save to csv..')
-    dataset.to_csv('./csv/dataset.csv')
-    testset.to_csv('./csv/testset.csv')
+    dataset.to_csv(dataset_path)
+    testset.to_csv(testset_path)
     print('dataset:')
     print(dataset.shape)
     print('testset:')
     print(testset.shape)
+
+
+if __name__ == '__main__':
+    main()

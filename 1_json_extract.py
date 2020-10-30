@@ -1,15 +1,17 @@
 import csv
 import json
 import os
-
+import yaml
 from label_extract import load_label
 
-DATA_SET = "/home/itu/datadisk/dataset"
-# DATA_SET = "/Users/xiafei/Downloads/itu-dataset"
-LEARNING_DIR = "/home/itu/datadisk/dataset/data-for-learning"
-# LEARNING_DIR = "/Users/xiafei/Downloads/itu-dataset/data-for-learning"
-EVALUATION_DIR = "/home/itu/datadisk/dataset/data-for-evaluation"
-# EVALUATION_DIR = "/Users/xiafei/Downloads/itu-dataset/data-for-evaluation"
+with open('./conf.yaml', 'r') as f:
+    conf = yaml.load(f.read(), Loader=yaml.SafeLoader)
+    DATA_SET = conf['DATA_SET']
+    LEARNING_DIR = conf['LEARNING_DIR']
+    EVALUATION_DIR = conf['EVALUATION_DIR']
+    PHYSICAL_SUB_DIR = conf['PHYSICAL_SUB_DIR']
+    NETWORK_SUB_DIR = conf['NETWORK_SUB_DIR']
+    VIRTUAL_SUB_DIR = conf['VIRTUAL_SUB_DIR']
 DATE = "20200629"
 
 
@@ -257,7 +259,7 @@ def read_json_by_folder(folder_path, data_type, batch, attribute, common_file_li
             new_attributes_value.append(recipes.get_type_code(path_list[i]))
             write_file.add_rows(new_attributes_value)
     if write_file:
-        write_file.close();
+        write_file.close()
 
 
 def sort_attributes_value(sort_key, all_attributes_key, all_attributes_value):
@@ -301,13 +303,13 @@ def read_json_by_path(path, data_type):
 
 
 def main():
-    l_p_path = LEARNING_DIR + '/physical-infrastructure-bgpnw2/'
-    l_n_path = LEARNING_DIR + '/network-device-bgpnw2/'
-    l_v_path = LEARNING_DIR + '/virtual-infrastructure-bgpnw2/'
+    l_p_path = LEARNING_DIR + PHYSICAL_SUB_DIR
+    l_n_path = LEARNING_DIR + NETWORK_SUB_DIR
+    l_v_path = LEARNING_DIR + VIRTUAL_SUB_DIR
 
-    e_p_path = EVALUATION_DIR + '/physical-infrastructure-bgpnw2/'
-    e_n_path = EVALUATION_DIR + '/network-device-bgpnw2/'
-    e_v_path = EVALUATION_DIR + '/virtual-infrastructure-bgpnw2/'
+    e_p_path = EVALUATION_DIR + PHYSICAL_SUB_DIR
+    e_n_path = EVALUATION_DIR + NETWORK_SUB_DIR
+    e_v_path = EVALUATION_DIR + VIRTUAL_SUB_DIR
 
     common_file_list = [i for i in os.listdir(l_p_path) if i in os.listdir(l_n_path) if i in os.listdir(l_v_path)]
     test_common_file_list = [i for i in os.listdir(e_p_path) if i in os.listdir(e_n_path) if i in os.listdir(e_v_path)]

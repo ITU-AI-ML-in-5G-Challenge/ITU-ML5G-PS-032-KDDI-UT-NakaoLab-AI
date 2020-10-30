@@ -1,4 +1,12 @@
 import pandas as pd
+import yaml
+
+with open('./conf.yaml', 'r') as f:
+    conf = yaml.load(f.read(), Loader=yaml.SafeLoader)
+    dataset_path = conf['CSV_DATA_SET']
+    testset_path = conf['CSV_TEST_SET']
+    diff_dataset_path = conf['CSV_DIFF_DATA_SET']
+    diff_testset_path = conf['CSV_DIFF_TEST_SET']
 
 
 def get_diff_dataset(dataset, X_train):
@@ -29,20 +37,20 @@ def get_diff_dataset(dataset, X_train):
     return diff_dataset
 
 
-if __name__ == '__main__':
+def main():
     print('reading dataset...')
-    dataset = pd.read_csv('./csv/dataset.csv')
-    testset = pd.read_csv('./csv/testset.csv')
+    dataset = pd.read_csv(dataset_path)
+    testset = pd.read_csv(testset_path)
     print('dataset', dataset.shape)
     print('testset', testset.shape)
-    # 划分训练测试
+    # Segmentation training tests
     column = dataset.columns
     X_train = dataset[column[:-2]]
     X_test = testset[column[:-2]]
     y_train = dataset[column[-1]]
     y_test = testset[column[-1]]
 
-    print('获取差值训练集...')
+    print('get diff dataset...')
     diff_dataset = get_diff_dataset(dataset, X_train)
     diff_testset = get_diff_dataset(testset, X_test)
 
@@ -58,8 +66,12 @@ if __name__ == '__main__':
     # diff_dataset.drop(columns=['Unnamed: 0'], inplace=True)
     # diff_testset.drop(columns=['Unnamed: 0'], inplace=True)
 
-    print('写入到csv..')
-    diff_dataset.to_csv('./csv/diff_dataset.csv')
-    diff_testset.to_csv('./csv/diff_testset.csv')
+    print('writing to csv..')
+    diff_dataset.to_csv(diff_dataset_path)
+    diff_testset.to_csv(diff_testset_path)
     print('diff_dataset:', diff_dataset.shape)
     print('diff_testset:', diff_testset.shape)
+
+
+if __name__ == '__main__':
+    main()
