@@ -41,8 +41,7 @@
 3. If you have not completed the extraction steps:
 Modify the path information in the configuration file.
 Make sure `<TRAIN_PATH>`, `<TEST_PATH>` (conf.yaml) these two folders exist. If not, create it with `mkdir`.
-Then run: 
-###### (`Attention: This step will take about 10+ hours to extract all the JSON files! If "./csv/diff_dataset.csv" and "./csv/diff_testset.csv" have already been generated, jump to step 6 or 7.`)
+Then run: (`Attention: This step will take about 10+ hours to extract all the JSON files! If "./csv/diff_dataset.csv" and "./csv/diff_testset.csv" have already been generated, jump to step 6 or 7.`)
         
         python ./1_json_extract.py
             
