@@ -40,8 +40,9 @@ Switch to project directory:
         
 If you have not completed the extraction steps:
 Modify the path information in the configuration file.
-Make sure `<TRAIN_PATH>, <TEST_PATH> (conf.yaml) these two folders exist.
-Then run (Attention: this step takes about 10+ hours to extract all the JSON files!):
+Make sure `<TRAIN_PATH>`, `<TEST_PATH>` (conf.yaml) these two folders exist. If not, create it with `mkdir`.
+Then run: 
+(<font color=RED>Attention:</font> `this step takes about 10+ hours to extract all the JSON files!`)
         
         python ./1_json_extract.py
             
