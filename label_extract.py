@@ -1,6 +1,7 @@
 import json
 from datetime import datetime, timedelta
 
+# type code:
 # ixnetwork-traffic-start: 1
 # node-down: 25
 # node-up: 25
@@ -51,6 +52,7 @@ def load_label(path):
 
 
 if __name__ == '__main__':
+    # test code
     recipes = load_label("./label-for-learning.json")
     print(recipes.get_type("20200629105300.json"))
     print(recipes.get_type("20200629105300.json"))

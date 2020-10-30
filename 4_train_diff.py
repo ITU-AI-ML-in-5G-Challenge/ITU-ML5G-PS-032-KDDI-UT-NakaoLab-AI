@@ -8,7 +8,6 @@ from sklearn import svm
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 from sklearn.model_selection import GridSearchCV
-from sklearn.model_selection import train_test_split
 from sklearn.neural_network import MLPClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeClassifier
@@ -16,6 +15,7 @@ from xgboost import XGBClassifier
 
 dataset_path = './csv/diff_dataset.csv'
 testset_path = './csv/diff_testset.csv'
+
 
 def plot_confusion_matrix(cm, classes,
                           normalize=False,
@@ -146,7 +146,7 @@ def mlp(std_X_train, y_train, std_X_test, y_test, show=False):
     middle_time = time.time()
     y_pred = mlp.predict(std_X_test)
     current_time = time.time()
-    print("MLP Accuracy: %.2f"% accuracy_score(y_test, y_pred))
+    print("MLP Accuracy: %.2f" % accuracy_score(y_test, y_pred))
     print("训练耗时： {}".format(middle_time - last_time))
     print("测试耗时： {}".format(current_time - middle_time))
     if show:
@@ -181,7 +181,7 @@ def train_svm(std_X_train, y_train, std_X_test, y_test, show=False):
     model = svm_cross_validation(std_X_train, y_train.ravel())
     middle_time = time.time()
     y_pred = model.predict(std_X_test)
-    print("SVM Accuracy: %.2f"% accuracy_score(y_test, y_pred))
+    print("SVM Accuracy: %.2f" % accuracy_score(y_test, y_pred))
     current_time = time.time()
     print("训练耗时： {}".format(middle_time - last_time))
     if show:
@@ -203,7 +203,7 @@ if __name__ == '__main__':
     dataset = pd.read_csv(dataset_path, index_col=None, header=0)
     testset = pd.read_csv(testset_path, index_col=None, header=0)
 
-    # 删除以下这些状态
+    # Delete the following states
     # 0: ixnetwork-traffic-start
     # 2: node-up
     # 4: interface-up

@@ -10,7 +10,7 @@ def get_diff_dataset(dataset, X_train):
         row_type = row[-1]
 
         if index == dataset.shape[0] - 1:
-            # 最后一行
+            # last line
             end_index = index
             diff_df = X_train.loc[[start_index, end_index]].diff().loc[[end_index]]
             diff_df['v_type_code'] = cur_type
@@ -30,7 +30,7 @@ def get_diff_dataset(dataset, X_train):
 
 
 if __name__ == '__main__':
-    print('读取数据集...')
+    print('reading dataset...')
     dataset = pd.read_csv('./csv/dataset.csv')
     testset = pd.read_csv('./csv/testset.csv')
     print('dataset', dataset.shape)
@@ -46,15 +46,15 @@ if __name__ == '__main__':
     diff_dataset = get_diff_dataset(dataset, X_train)
     diff_testset = get_diff_dataset(testset, X_test)
 
-    # 去掉无用字段
+    # Remove the useless fields.
     diff_dataset.drop(['v_type'], axis=1, inplace=True)
     diff_testset.drop(['v_type'], axis=1, inplace=True)
-    # 去掉时间对结果的影响
+    # Remove the effect of time on results.
     diff_dataset.drop(['p_/time'], axis=1, inplace=True)
     diff_testset.drop(['p_/time'], axis=1, inplace=True)
     diff_dataset.drop(['v_/time'], axis=1, inplace=True)
     diff_testset.drop(['v_/time'], axis=1, inplace=True)
-    # 删除开头两个unknown的列 (没作用~
+    # Delete the first two unknown columns (doesn't work~)
     # diff_dataset.drop(columns=['Unnamed: 0'], inplace=True)
     # diff_testset.drop(columns=['Unnamed: 0'], inplace=True)
 

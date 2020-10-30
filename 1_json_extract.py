@@ -2,8 +2,6 @@ import csv
 import json
 import os
 
-import yaml
-
 from label_extract import load_label
 
 DATA_SET = "/home/itu/datadisk/dataset"
@@ -147,11 +145,7 @@ def Return_All_Atributes_n(data, attribute_key, all_attributes_value, all_attrib
                 if attribute_key.split('/')[-1] == 'devices' or \
                         attribute_key.split('/')[-1] == 'neighbor' or attribute_key.split('/')[
                     -1] == 'bgp-neighbor-summary':
-                    key_ = attribute_key  # + '#' + str(data.index(item))
-                    # print ('ss')
-                    # key_ = attribute_key + '#' + str(data.index(item))
-                # elif attribute_key.split('/')[-1] == 'neighbor' or attribute_key.split('/')[-1] == 'bgp-neighbor-summary':
-                # key_ = attribute_key + '#' + str(data.index(item))
+                    key_ = attribute_key
                 elif attribute_key.split('/')[-1] == 'bgp-route-entry':
                     if str(attribute_value_list[0]) not in prefix:
                         prefix.append(str(attribute_value_list[0]))
@@ -159,15 +153,7 @@ def Return_All_Atributes_n(data, attribute_key, all_attributes_value, all_attrib
                 elif attribute_key.split('/')[-1] == 'bgp-path-entry':
                     if str(attribute_value_list[0]) not in nexthop:
                         nexthop.append(str(attribute_value_list[0]))
-                        # prefix.append(int(1))
-                    # else:
-                    # prefix[nexthop.index(str(attribute_value_list[0]))] += 1
                     return
-                    # key_ = attribute_key + '#' + str(attribute_value_list[0])
-                # elif attribute_key.split('/')[-1] == 'load-avg-minute':
-                # key_ = attribute_key + '#' + str(attribute_value_list[0])
-                # elif 'name' in attribute_key_list:
-                # key_ = attribute_key + '#' + str(attribute_value_list[attribute_key_list.index('name')])
                 else:
                     key_ = attribute_key
                 for i in attribute_key_list:
@@ -195,16 +181,7 @@ def Return_All_Atributes_n(data, attribute_key, all_attributes_value, all_attrib
 
                 if str(attribute_value_list[0]) not in nexthop:
                     nexthop.append(str(attribute_value_list[0]))
-                    # prefix.append(int(1))
-                # else:
-                # prefix[nexthop.index(str(attribute_value_list[0]))] += 1
                 return
-
-                # key_ = attribute_key + '#' + str(attribute_value_list[0])
-            # elif attribute_key.split('/')[-1] == 'load-avg-minute':
-            # key_ = attribute_key + '#' + str(attribute_value_list[0])
-            # elif 'name' in attribute_key_list:
-            # key_ = attribute_key + '#' + str(attribute_value_list[attribute_key_list.index('name')])
             else:
                 key_ = attribute_key
             for item in attribute_key_list:
@@ -222,24 +199,17 @@ def Return_All_Atributes_n(data, attribute_key, all_attributes_value, all_attrib
 def read_json_by_folder(folder_path, data_type, batch, attribute, common_file_list=[]):
     path_list = []
     for file_path in os.listdir(folder_path):
-        # print("file_path:"+file_path);
-        # print("date:" + file_path[:8]);
-        # if DATE not in file_path:
-        #    continue;
         if len(common_file_list) != 0 and file_path not in common_file_list:
             continue
         if file_path.endswith(".json"):
             path_list.append(file_path)
     path_list.sort(key=lambda x: int(x[:-5]))
 
-    #print('file_count:', len(path_list))
     if batch == 0:
         batch = len(path_list)
 
-    # 初始化
+    # initialization
     sort_key = []
-    new_attributes_value = []
-    # write_file_path = DATA_SET+'/csv-for-'+attribute+'/' + path_list[0][:-11] +'.'+data_type+'.csv'
     write_file = None
     recipes = load_label(DATA_SET + '/label-for-' + attribute + '.json')
     cur_date = 'inital_date';
@@ -247,13 +217,9 @@ def read_json_by_folder(folder_path, data_type, batch, attribute, common_file_li
         write_file_path = DATA_SET + '/csv-for-' + attribute + '/' + path_list[i][:-11] + '.' + data_type + '.csv'
         print(folder_path + path_list[i])
         all_attributes_value, all_attributes_key = read_json_by_path(folder_path + path_list[i], data_type)
-        #print(len(all_attributes_key))
-        # print('all_attributes_key:', all_attributes_key)
-        # print('all_attributes_value', all_attributes_value)
-        print(cur_date);
+        print(cur_date)
         if cur_date not in path_list[i]:
             cur_date = path_list[i][:8];
-            #print(cur_date);
 
             new_key = []
             new_value = []
@@ -263,11 +229,7 @@ def read_json_by_folder(folder_path, data_type, batch, attribute, common_file_li
                     new_value.append(all_attributes_value[index])
             all_attributes_key = new_key
             all_attributes_value = new_value
-            #print(len(all_attributes_key))
-            # b = dict(Counter(sort_key))
-            # print({key: value for key, value in b.items() if value > 1})  # 重复元素和重复次数
             sort_key = new_key
-            # sort_key = all_attributes_key
             if write_file:
                 write_file.close();
             write_file = WriteToCSV(write_file_path)
@@ -289,13 +251,11 @@ def read_json_by_folder(folder_path, data_type, batch, attribute, common_file_li
                     new_value.append(all_attributes_value[index])
             all_attributes_key = new_key
             all_attributes_value = new_value
-            #print(len(all_attributes_key))
 
             new_attributes_value = sort_attributes_value(sort_key, all_attributes_key, all_attributes_value)
             new_attributes_value.append(recipes.get_type(path_list[i]))
             new_attributes_value.append(recipes.get_type_code(path_list[i]))
             write_file.add_rows(new_attributes_value)
-        # print('new_attributes_value', new_attributes_value)
     if write_file:
         write_file.close();
 
@@ -312,10 +272,7 @@ def sort_attributes_value(sort_key, all_attributes_key, all_attributes_value):
         else:
             lack_num = lack_num + 1
             print(sort_key[i])
-        # new_attributes_value[sort_key.index(all_attributes_key[i])] = all_attributes_value[i]
-    #print("Lack num : ", lack_num)
     for i in range(len(all_attributes_key)):
-        # print (all_attributes_key[i])
         new_attributes_value[sort_key.index(all_attributes_key[i])] = all_attributes_value[i]
     return new_attributes_value
 
@@ -339,9 +296,6 @@ def read_json_by_path(path, data_type):
             all_attributes_value.append(len(prefix))
         else:
             Return_All_Atributes_p(data, attribute_key, all_attributes_value, all_attributes_key)
-
-        #print(len(nexthop))
-        #print(len(prefix))
 
         return all_attributes_value, all_attributes_key
 

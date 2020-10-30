@@ -5,7 +5,7 @@ train_path = r'/home/itu/datadisk/dataset/csv-for-learning/'
 test_path = r'/home/itu/datadisk/dataset/csv-for-evaluation/'
 # test_path = r'/Users/xiafei/Downloads/itu-dataset/csv-for-evaluation/'
 
-# 合并三类csv
+# Combining three types of csv.
 def df_combine(train_n_files, train_v_files, train_p_files, test_n_files, test_v_files, test_p_files):
     li_n = []
     li_v = []
@@ -73,10 +73,10 @@ def df_combine(train_n_files, train_v_files, train_p_files, test_n_files, test_v
     # testset = pd.concat([test_n, test_v, test_p], axis=1, sort=False)
     testset_pn = pd.merge(test_p, test_n, how='inner', left_index=True, right_index=True)
     testset = pd.merge(testset_pn, test_v, how='inner', on=['common_time_index'])
-    # 删除用来连接表的临时字段
+    # Delete the temporary fields used to join the table
     dataset.drop(['common_time_index'], axis=1, inplace=True)
     testset.drop(['common_time_index'], axis=1, inplace=True)
-    # 删除有异常值的行
+    # Delete lines with outliers
     dataset.dropna(axis=0, how='any', inplace=True)
     testset.dropna(axis=0, how='any', inplace=True)
     return dataset, testset
@@ -107,7 +107,7 @@ if __name__ == '__main__':
                      '20200711.p.csv', '20200712.p.csv', '20200713.p.csv']]
 
     dataset, testset = df_combine(train_n_files, train_v_files, train_p_files, test_n_files, test_v_files, test_p_files)
-    print('保存到csv..')
+    print('save to csv..')
     dataset.to_csv('./csv/dataset.csv')
     testset.to_csv('./csv/testset.csv')
     print('dataset:')
