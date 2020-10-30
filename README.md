@@ -30,39 +30,39 @@
 - [jupyter-notebook 6.0.3](https://jupyter.org/install)
 
 # Getting Started
-Check the Python version：
+1. Check the Python version：
 
         python -V
         
-Switch to project directory:
+2. Switch to project directory:
 
         cd <Your path>/itu-ml-challenge
         
-If you have not completed the extraction steps:
+3. If you have not completed the extraction steps:
 Modify the path information in the configuration file.
 Make sure `<TRAIN_PATH>`, `<TEST_PATH>` (conf.yaml) these two folders exist. If not, create it with `mkdir`.
 Then run: 
-###### (`Attention: This step will take about 10+ hours to extract all the JSON files!`)
+###### (`Attention: This step will take about 10+ hours to extract all the JSON files! If "./csv/diff_dataset.csv" and "./csv/diff_testset.csv" have already been generated, jump to step 6 or 7.`)
         
         python ./1_json_extract.py
             
-Check that a CSV file has been generated under <TRAIN_PATH> and <TEST_PATH>.
+4. Check that a CSV file has been generated under <TRAIN_PATH> and <TEST_PATH>.
 Then run:
 
         python ./2_csv_combine.py
 
-Check whether `dataset.csv` and `testset.csv` have been generated under `./csv/` in the current directory.
+5. Check whether `dataset.csv` and `testset.csv` have been generated under `./csv/` in the current directory.
 Then run:
         
         python ./3_csv_diff_generate.py
         
-Check whether `diff_dataset.csv` and `diff_testset.csv` have been generated under `./csv/` in the current directory.        
+6. Check whether `diff_dataset.csv` and `diff_testset.csv` have been generated under `./csv/` in the current directory.        
 If these two files have been generated, congratulations on the completion of the extraction.
 Then run:
 
         python ./4_train_diff.py
         
-You will see the training and test results printed on the console.
+7. You will see the training and test results printed on the console.
 At the same time, you can also use jupyter notebook to analyze the data.
 
         jupyter notebook
