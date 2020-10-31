@@ -29,6 +29,9 @@
 - [Python 3.7.6](https://www.python.org/downloads/release/python-376/)
 - [jupyter-notebook 6.0.3](https://jupyter.org/install)
 
+# dependencies
+- pip3 install pyyaml pandas
+
 # Getting Started
 1. Check the Python version：
 
@@ -41,25 +44,25 @@
 3. If you have not completed the extraction steps:
 Modify the path information in the configuration file.
 Make sure `<TRAIN_PATH>`, `<TEST_PATH>` (conf.yaml) these two folders exist. If not, create it with `mkdir`.
-Then run: (`Attention: This step will take about 10+ hours to extract all the JSON files! If "./csv/diff_dataset.csv" and "./csv/diff_testset.csv" have already been generated, jump to step 6 or 7.`)
+Then run: (`Attention: This step will take about 10+ hours to extract all the JSON files into ./dataset/csv-for-learning and ./dataset/csv-for-evluation folders. We have already checked in the above two folders so that we can skip this step. 
         
-        python ./1_feature_extract.py
+        $ python3 1_feature_extract.py
             
 4. Check that a CSV file has been generated under <TRAIN_PATH> and <TEST_PATH>.
 Then run:
 
-        python ./2_feature_combine.py
+        $ python3 2_feature_combine.py
 
 5. Check whether `dataset.csv` and `testset.csv` have been generated under `./csv/` in the current directory.
 Then run:
         
-        python ./3_feature_refine.py
+        $ python3 3_feature_refine.py
         
 6. Check whether `diff_dataset.csv` and `diff_testset.csv` have been generated under `./csv/` in the current directory.        
 If these two files have been generated, congratulations on the completion of the extraction.
 Then run:
 
-        python ./4_train.py
+        $ python3 4_train.py
         
 7. You will see the training and test results printed on the console.
 At the same time, you can also use jupyter notebook to analyze the data.

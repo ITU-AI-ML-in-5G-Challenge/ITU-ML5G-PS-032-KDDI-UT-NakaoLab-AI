@@ -6,8 +6,8 @@ PHYSICAL_SUB_DIR: /physical-infrastructure-bgpnw2/
 NETWORK_SUB_DIR: /network-device-bgpnw2/
 VIRTUAL_SUB_DIR: /virtual-infrastructure-bgpnw2/
 # 2_csv_combine 3_csv_combine 4_train_diff
-TRAIN_PATH: /home/itu/datadisk/dataset/csv-for-learning/
-TEST_PATH: /home/itu/datadisk/dataset/csv-for-evaluation/
+TRAIN_PATH: ./dataset/csv-for-learning/
+TEST_PATH: ./dataset/csv-for-evaluation/
 CSV_DATA_SET: ./csv/dataset.csv
 CSV_TEST_SET: ./csv/testset.csv
 CSV_DIFF_DATA_SET: ./csv/diff_dataset.csv
