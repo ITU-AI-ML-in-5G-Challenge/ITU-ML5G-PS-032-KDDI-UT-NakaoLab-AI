@@ -29,7 +29,7 @@
 - [Python 3.7.6](https://www.python.org/downloads/release/python-376/)
 - [jupyter-notebook 6.0.3](https://jupyter.org/install)
 
-# dependencies
+# Required python packages
 - pip3 install pyyaml pandas
 
 # Getting Started
