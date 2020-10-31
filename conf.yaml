@@ -1,4 +1,4 @@
-# 1_json_extract conf
+# 1_feature_extract conf
 DATA_SET: /home/itu/datadisk/dataset
 LEARNING_DIR: /home/itu/datadisk/dataset/data-for-learning
 EVALUATION_DIR: /home/itu/datadisk/dataset/data-for-evaluation
