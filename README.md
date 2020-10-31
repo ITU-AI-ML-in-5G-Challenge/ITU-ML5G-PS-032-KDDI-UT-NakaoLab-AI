@@ -71,7 +71,7 @@ At the same time, you can also use jupyter notebook to analyze the data.
         
 Choose to open `diff_analysis.ipynb` and `feature_importance_analysis.ipynb`.
 
-# Reference: Labels of Events
+# Labels of Events
 - 0: ixnetwork-traffic-start
 - 1: node-down
 - 2: node-up
