@@ -35,11 +35,11 @@
 # Getting Started
 1. Check the Python version：
 
-        python -V
+        $ python3 -V
         
 2. Switch to project directory:
 
-        cd <Your path>/itu-ml-challenge
+        $ cd <Your path>/itu-ml-challenge
         
 3. If you have not completed the extraction steps:
 Modify the path information in the configuration file.
