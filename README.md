@@ -1,4 +1,4 @@
-# Program Directory Structure Description
+# Introduction of source code
 - `conf.yaml`: All path configurations
 - `1_json_extract.py`: Extract all the json files into csv files and store them on a daily basis.
 - `2_csv_combine.py`: Merge all the CSV into training and test sets.
