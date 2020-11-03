@@ -1,8 +1,5 @@
-import itertools
 import time
 import yaml
-import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
 from sklearn import svm
 from sklearn.ensemble import RandomForestClassifier
@@ -160,6 +157,10 @@ def main():
     dataset.drop(index=data_drop_index, axis=0, inplace=True)
     test_drop_index = testset[testset['v_type_code'] % 2 == 0].index.tolist()
     testset.drop(index=test_drop_index, axis=0, inplace=True)
+
+    # Try to combine 5 and 7 into one type.
+    # dataset['v_type_code'] = dataset['v_type_code'].apply(lambda x: 57 if x == 5 or x == 7 else x)
+    # testset['v_type_code'] = testset['v_type_code'].apply(lambda x: 57 if x == 5 or x == 7 else x)
 
     print('dataset:')
     print(dataset.shape)
