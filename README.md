@@ -30,7 +30,17 @@
 - [jupyter-notebook 6.0.3](https://jupyter.org/install)
 
 # Required python packages
-- pip3 install pyyaml pandas
+Please install CMake before install xgboost
+- CMake(version:3+)
+    - `brew install cmake` for OS X
+    - `sudo apt install cmake` for Ubuntu
+    - `yum install cmake` for CentOS
+   
+-  pip3 install pandas==0.24.2
+-  pip3 install pyyaml==5.3
+-  pip3 install matplotlib==3.3.0
+-  pip3 install scikit-learn==0.23.2
+-  pip3 install xgboost==1.1.1
 
 # Getting Started
 1. Check the Python version：
