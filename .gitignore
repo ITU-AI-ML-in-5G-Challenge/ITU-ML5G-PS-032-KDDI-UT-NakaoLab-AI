@@ -5,3 +5,4 @@ report-checkpoint.ipynb
 __pycache__
 .ipynb_checkpoints
 ignore
+feature_important_data_XG_1015.csv

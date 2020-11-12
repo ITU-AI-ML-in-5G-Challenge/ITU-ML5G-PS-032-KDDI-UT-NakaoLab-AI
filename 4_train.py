@@ -42,9 +42,9 @@ def decision_tree(X_train, y_train, X_test, y_test, show=False):
 
 
 # random forest
-def random_forest(X_train, y_train, X_test, y_test, show=False):
+def random_forest(X_train, y_train, X_test, y_test, show=False, estimators=100):
     last_time = time.time()
-    rf = RandomForestClassifier(n_estimators=100, max_depth=None, min_samples_split=2, random_state=0)
+    rf = RandomForestClassifier(n_estimators=estimators, max_depth=None, min_samples_split=2, random_state=0)
 
     rf.fit(X_train, y_train)
     middle_time = time.time()
@@ -52,9 +52,8 @@ def random_forest(X_train, y_train, X_test, y_test, show=False):
     y_pred = rf.predict(X_test)
 
     current_time = time.time()
-
+    print("n_estimators: %d" % estimators)
     print("RF Accuracy: %.2f" % accuracy_score(y_test, y_pred))
-
     print("train time： {}".format(middle_time - last_time))
     print("test time： {}".format(current_time - middle_time))
     if show:
@@ -66,9 +65,9 @@ def random_forest(X_train, y_train, X_test, y_test, show=False):
 
 
 # XGBoost
-def xgboost(X_train, y_train, X_test, y_test, show=False):
+def xgboost(X_train, y_train, X_test, y_test, show=False, estimators=100):
     last_time = time.time()
-    xgb = XGBClassifier(n_estimators=100, n_jobs=-1, objective='multi:softmax', num_class=6, random_state=0)
+    xgb = XGBClassifier(n_estimators=estimators, n_jobs=-1, objective='multi:softmax', num_class=5, random_state=0)
 
     xgb.fit(X_train, y_train)
     middle_time = time.time()
@@ -77,8 +76,8 @@ def xgboost(X_train, y_train, X_test, y_test, show=False):
 
     current_time = time.time()
 
+    print("n_estimators: %d" % estimators)
     print("XGBOOST Accuracy: %.2f" % accuracy_score(y_test, y_pred))
-
     print("train time： {}".format(middle_time - last_time))
     print("test time： {}".format(current_time - middle_time))
     if show:
@@ -99,8 +98,8 @@ def mlp(std_X_train, y_train, std_X_test, y_test, show=False):
     y_pred = mlp.predict(std_X_test)
     current_time = time.time()
     print("MLP Accuracy: %.2f" % accuracy_score(y_test, y_pred))
-    print("训练耗时： {}".format(middle_time - last_time))
-    print("测试耗时： {}".format(current_time - middle_time))
+    print("train time： {}".format(middle_time - last_time))
+    print("test time： {}".format(current_time - middle_time))
     if show:
         cm = confusion_matrix(y_test, y_pred)
         print('confusion matrix MLP:')
@@ -159,8 +158,8 @@ def main():
     testset.drop(index=test_drop_index, axis=0, inplace=True)
 
     # Try to combine 5 and 7 into one type.
-    # dataset['v_type_code'] = dataset['v_type_code'].apply(lambda x: 57 if x == 5 or x == 7 else x)
-    # testset['v_type_code'] = testset['v_type_code'].apply(lambda x: 57 if x == 5 or x == 7 else x)
+    dataset['v_type_code'] = dataset['v_type_code'].apply(lambda x: 57 if x == 5 or x == 7 else x)
+    testset['v_type_code'] = testset['v_type_code'].apply(lambda x: 57 if x == 5 or x == 7 else x)
 
     print('dataset:')
     print(dataset.shape)
@@ -186,10 +185,12 @@ def main():
     std_X_train = ss.fit_transform(X_train)
     std_X_test = ss.fit_transform(X_test)
 
+    # estimator_list = [100, 300, 500]
+
     decision_tree(X_train, y_train, X_test, y_test, show=True)
 
+    # for n in estimator_list:
     random_forest(X_train, y_train, X_test, y_test, show=True)
-
     xgboost(X_train, y_train, X_test, y_test, show=True)
 
     mlp(std_X_train, y_train, std_X_test, y_test, show=True)
