@@ -1,3 +1,4 @@
+# ITU-ML5G-PS-032-KDDI-UT-NakaoLab-AI
 # Introduction of source code
 - `conf.yaml`: path environment configuration file
 - `1_feature_extract.py`: Extract features from json files into csv files and store them on a daily basis.
