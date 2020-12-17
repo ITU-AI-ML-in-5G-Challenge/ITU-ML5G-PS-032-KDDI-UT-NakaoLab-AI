@@ -99,3 +99,6 @@ Choose to open `diff_analysis.ipynb` and `feature_importance_analysis.ipynb`.
 - 13: ixnetwork-traffic-stop
 # Performance Evaluation
 - Please refer to report ITU-JP-Theme1_UT_workshop.pdf (https://github.com/ITU-AI-ML-in-5G-Challenge/ITU-ML5G-PS-032-KDDI-UT-NakaoLab-AI/blob/master/ITU-JP-Theme1_UT_workshop.pdf)
+# Demo
+ - Plear find our demonstration video at https://exchange.nakao-lab.org/index.php/s/URHs2lLJeR1zOQQ
+
